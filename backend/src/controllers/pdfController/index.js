@@ -1,4 +1,3 @@
-const PDFDocument = require('pdfkit');
 const moment = require('moment');
 const { loadSettings } = require('../../middlewares/settings');
 const useLanguage = require('../../locale/useLanguage');
@@ -14,6 +13,7 @@ function pdfSafeText(text) {
 function generatePdfBuffer(modelName, model) {
   return new Promise(async (resolve, reject) => {
     try {
+      const PDFDocument = require('pdfkit');
       const type = String(modelName || '').toLowerCase();
       if (!supportedTypes.includes(type)) {
         return reject(new Error(`Unsupported PDF type: ${modelName}`));
