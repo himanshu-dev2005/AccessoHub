@@ -1,15 +1,17 @@
 ﻿const jwt = require('jsonwebtoken');
 
 const mongoose = require('../../../db');
+const {
+  DEFAULT_ADMIN_ID,
+  DEFAULT_ADMIN_PROFILE,
+  getJwtSecret,
+  isDefaultAdminTokenRevoked,
+} = require('./defaultAdminAuth');
 
 const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SECRET' }) => {
   try {
-    const UserPassword = mongoose.model(userModel + 'Password');
-    const User = mongoose.model(userModel);
-
-    // const token = req.cookies[`token_${cloud._id}`];
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Extract the token
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token)
       return res.status(401).json({
@@ -19,7 +21,7 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
         jwtExpired: true,
       });
 
-    const verified = jwt.verify(token, process.env[jwtSecret]);
+    const verified = jwt.verify(token, getJwtSecret(jwtSecret));
 
     if (!verified)
       return res.status(401).json({
@@ -28,6 +30,22 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
         message: 'Token verification failed, authorization denied.',
         jwtExpired: true,
       });
+
+    if (verified.id === DEFAULT_ADMIN_ID && verified.isDefaultAdmin) {
+      if (isDefaultAdminTokenRevoked(token)) {
+        return res.status(401).json({
+          success: false,
+          result: null,
+          message: 'User is already logout try to login, authorization denied.',
+          jwtExpired: true,
+        });
+      }
+      req[userModel.toLowerCase()] = { ...DEFAULT_ADMIN_PROFILE };
+      return next();
+    }
+
+    const UserPassword = mongoose.model(userModel + 'Password');
+    const User = mongoose.model(userModel);
 
     const userPasswordPromise = UserPassword.findOne({ user: verified.id, removed: false });
     const userPromise = User.findOne({ _id: verified.id, removed: false });
@@ -51,11 +69,9 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
         message: 'User is already logout try to login, authorization denied.',
         jwtExpired: true,
       });
-    else {
-      const reqUserName = userModel.toLowerCase();
-      req[reqUserName] = user;
-      next();
-    }
+
+    req[userModel.toLowerCase()] = user;
+    next();
   } catch (error) {
     return res.status(500).json({
       success: false,

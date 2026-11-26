@@ -1,12 +1,20 @@
 ﻿const mongoose = require('../../../db');
+const { DEFAULT_ADMIN_ID, revokeDefaultAdminToken } = require('./defaultAdminAuth');
 
 const logout = async (req, res, { userModel }) => {
-  const UserPassword = mongoose.model(userModel + 'Password');
-
-  // const token = req.cookies[`token_${cloud._id}`];
-
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Extract the token
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (req.admin?._id === DEFAULT_ADMIN_ID) {
+    revokeDefaultAdminToken(token);
+    return res.json({
+      success: true,
+      result: {},
+      message: 'Successfully logout',
+    });
+  }
+
+  const UserPassword = mongoose.model(userModel + 'Password');
 
   if (token)
     await UserPassword.findOneAndUpdate(

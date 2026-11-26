@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { getJwtSecret } = require('./defaultAdminAuth');
 
 const authUser = async (req, res, { user, databasePassword, password, UserPasswordModel }) => {
   const isMatch = await bcrypt.compare(databasePassword.salt + password, databasePassword.password);
@@ -16,7 +17,7 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
       {
         id: user._id,
       },
-      process.env.JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: req.body.remember ? 365 * 24 + 'h' : '24h' }
     );
 
