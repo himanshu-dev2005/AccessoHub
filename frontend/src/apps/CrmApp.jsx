@@ -25,7 +25,7 @@ export default function CrmApp() {
     <Layout hasSider style={{ minHeight: '100vh' }}>
       <Navigation />
 
-      <Layout style={{ marginLeft: 0, background: '#F8FAFC' }}>
+      <Layout style={{ marginLeft: 0, background: '#F1F5F9' }}>
         <HeaderContent />
         <Content
           style={{

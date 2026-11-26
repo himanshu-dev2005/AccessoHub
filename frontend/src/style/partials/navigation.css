@@ -6,8 +6,32 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  background: #fff;
-  border-right: 1px solid #edf0f5;
+  background: #0b1120;
+  border-right: 1px solid #1e293b;
+}
+
+.navigation .ant-menu-item-group-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #64748b !important;
+  padding-top: 14px;
+  padding-bottom: 6px;
+}
+
+.navigation .ant-menu-dark .ant-menu-item-selected {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  font-weight: 600;
+}
+
+.navigation::-webkit-scrollbar {
+  width: 5px;
+}
+
+.navigation::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
 }
 
 .logo {

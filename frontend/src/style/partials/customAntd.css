@@ -1,4 +1,17 @@
 .ant-layout {
+  background: #F1F5F9 !important;
+}
+.ant-table-wrapper .ant-table {
+  border-radius: 12px;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+}
+.ant-table-thead > tr > th {
+  font-weight: 700 !important;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #334155 !important;
   background: #F8FAFC !important;
 }
 .site-layout .site-layout-background {

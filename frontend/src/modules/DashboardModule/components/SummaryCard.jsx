@@ -1,7 +1,14 @@
-import { Tag, Divider, Row, Col, Spin, Tooltip } from 'antd';
+import { Tag, Row, Col, Spin, Tooltip } from 'antd';
 import { useMoney } from '@/settings';
 import { selectMoneyFormat } from '@/redux/settings/selectors';
 import { useSelector } from 'react-redux';
+
+const ACCENT_MAP = {
+  blue: '#2563EB',
+  purple: '#7C3AED',
+  cyan: '#0891B2',
+  green: '#059669',
+};
 
 export default function AnalyticSummaryCard({
   title,
@@ -16,6 +23,7 @@ export default function AnalyticSummaryCard({
     amount: data || 0,
     currency_code: money_format_settings?.default_currency_code,
   });
+  const accent = ACCENT_MAP[tagColor] || '#1D4ED8';
 
   return (
     <Col
@@ -30,67 +38,65 @@ export default function AnalyticSummaryCard({
         style={{
           color: '#475569',
           fontSize: 13,
-          minHeight: '108px',
+          minHeight: '116px',
           height: '100%',
-          borderRadius: 12,
+          borderRadius: 14,
+          borderTop: `3px solid ${accent}`,
+          padding: '16px 18px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}
       >
-        <div className="pad15 strong" style={{ textAlign: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
           <h3
             style={{
               color: '#0F172A',
-              fontSize: 15,
-              margin: '4px 0',
+              fontSize: 14,
+              margin: 0,
               textTransform: 'capitalize',
+              letterSpacing: '-0.01em',
             }}
           >
             {title}
           </h3>
+          <Tag
+            color={tagColor}
+            style={{
+              margin: 0,
+              fontWeight: 600,
+              fontSize: 11,
+              borderRadius: 6,
+            }}
+          >
+            {prefix}
+          </Tag>
         </div>
-        <Divider style={{ padding: 0, margin: 0 }} />
-        <div className="pad15">
-          <Row gutter={[0, 0]} justify="space-between" align="middle" wrap={false}>
-            <Col className="gutter-row" flex="95px" style={{ textAlign: 'left' }}>
-              <div className="left" style={{ whiteSpace: 'nowrap', color: '#64748B' }}>
-                {prefix}
-              </div>
-            </Col>
-            <Divider style={{ height: '24px', margin: '0 8px' }} type="vertical" />
-            <Col
-              className="gutter-row"
-              flex="auto"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              {isLoading ? (
-                <Spin size="small" />
-              ) : (
-                <Tooltip title={formattedValue}>
-                  <Tag
-                    color={tagColor}
-                    style={{
-                      margin: '0 auto',
-                      maxWidth: '130px',
-                      overflow: 'hidden',
-                      whiteSpace: 'nowrap',
-                      textOverflow: 'ellipsis',
-                      direction: 'ltr',
-                      fontWeight: 600,
-                      fontSize: 13,
-                      padding: '2px 10px',
-                      borderRadius: 6,
-                    }}
-                  >
-                    {formattedValue}
-                  </Tag>
-                </Tooltip>
-              )}
-            </Col>
-          </Row>
-        </div>
+
+        <Row align="middle" style={{ marginTop: 14 }}>
+          <Col span={24}>
+            {isLoading ? (
+              <Spin size="small" />
+            ) : (
+              <Tooltip title={formattedValue}>
+                <div
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 800,
+                    color: '#0F172A',
+                    letterSpacing: '-0.02em',
+                    fontVariantNumeric: 'tabular-nums',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {formattedValue}
+                </div>
+              </Tooltip>
+            )}
+          </Col>
+        </Row>
       </div>
     </Col>
   );

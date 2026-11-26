@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,16 +16,15 @@ const LoginPage = () => {
   const translate = useLanguage();
   const { isLoading, isSuccess } = useSelector(selectAuth);
   const navigate = useNavigate();
-  // const size = useSize();
-
   const dispatch = useDispatch();
+
   const onFinish = (values) => {
     dispatch(login({ loginData: values }));
   };
 
   useEffect(() => {
     if (isSuccess) navigate('/');
-  }, [isSuccess]);
+  }, [isSuccess, navigate]);
 
   const FormContainer = () => {
     return (
@@ -37,13 +35,12 @@ const LoginPage = () => {
           className="login-form"
           initialValues={{
             remember: true,
-            email: 'admin@accessohub.com',
-            password: 'admin123',
           }}
           onFinish={onFinish}
+          requiredMark={false}
         >
           <LoginForm />
-          <Form.Item>
+          <Form.Item style={{ marginBottom: 0, marginTop: 8 }}>
             <Button
               type="primary"
               htmlType="submit"

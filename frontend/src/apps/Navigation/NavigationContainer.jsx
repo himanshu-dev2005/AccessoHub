@@ -5,7 +5,6 @@ import { Button, Drawer, Layout, Menu } from 'antd';
 import { useAppContext } from '@/context/appContext';
 import useLanguage from '@/locale/useLanguage';
 import logoIcon from '@/style/images/logo-icon.svg';
-import logoText from '@/style/images/logo-text.svg';
 import useResponsive from '@/hooks/useResponsive';
 
 import {
@@ -188,8 +187,10 @@ function Sidebar({ collapsible, isMobile = false }) {
         height: '100vh',
         position: isMobile ? 'absolute' : 'sticky',
         top: 0,
+        background: '#0B1120',
+        borderRight: '1px solid #1E293B',
       }}
-      theme={'light'}
+      theme={'dark'}
     >
       <div
         className="logo"
@@ -198,33 +199,49 @@ function Sidebar({ collapsible, isMobile = false }) {
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
-          gap: 10,
-          padding: '18px 20px 14px',
-          margin: 0,
+          gap: 12,
+          padding: '20px 20px 16px',
+          margin: '0 0 8px',
           width: '100%',
           height: 'auto',
+          borderBottom: '1px solid rgba(148, 163, 184, 0.14)',
         }}
       >
-        <img src={logoIcon} alt="AccessoHub Logo" style={{ height: '36px', width: '36px' }} />
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 9,
+            background: '#FFFFFF',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
+          }}
+        >
+          <img src={logoIcon} alt="AccessoHub Logo" style={{ height: '24px', width: '24px' }} />
+        </div>
 
         {!showLogoApp && (
-          <img
-            src={logoText}
-            alt="AccessoHub CRM"
-            style={{
-              height: '32px',
-            }}
-          />
+          <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
+            <span style={{ color: '#FFFFFF', fontWeight: 800, fontSize: 16, letterSpacing: '-0.02em' }}>
+              AccessoHub
+            </span>
+            <span style={{ color: '#60A5FA', fontWeight: 700, fontSize: 10, letterSpacing: '0.08em' }}>
+              CRM SUITE
+            </span>
+          </div>
         )}
       </div>
       <Menu
         items={items}
         mode="inline"
-        theme={'light'}
+        theme={'dark'}
         selectedKeys={[currentPath]}
         style={{
           borderInlineEnd: 'none',
-          padding: '4px 8px 40px',
+          padding: '6px 6px 40px',
+          background: '#0B1120',
         }}
       />
     </Sider>
