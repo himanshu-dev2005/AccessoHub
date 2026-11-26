@@ -1,0 +1,65 @@
+export const fields = {
+  title: {
+    type: 'string',
+    label: 'Task Title',
+    required: true,
+  },
+  type: {
+    type: 'selectWithTranslation',
+    label: 'Activity Type',
+    defaultValue: 'follow_up',
+    renderAsTag: true,
+    options: [
+      { value: 'call', label: 'call', color: 'blue' },
+      { value: 'email', label: 'email', color: 'cyan' },
+      { value: 'meeting', label: 'meeting', color: 'purple' },
+      { value: 'follow_up', label: 'follow_up', color: 'geekblue' },
+      { value: 'demo', label: 'demo', color: 'gold' },
+      { value: 'other', label: 'other', color: 'default' },
+    ],
+  },
+  priority: {
+    type: 'selectWithTranslation',
+    label: 'Priority',
+    defaultValue: 'medium',
+    renderAsTag: true,
+    options: [
+      { value: 'low', label: 'low', color: 'default' },
+      { value: 'medium', label: 'medium', color: 'blue' },
+      { value: 'high', label: 'high', color: 'orange' },
+      { value: 'urgent', label: 'urgent', color: 'red' },
+    ],
+  },
+  status: {
+    type: 'selectWithTranslation',
+    label: 'Status',
+    defaultValue: 'pending',
+    renderAsTag: true,
+    options: [
+      { value: 'pending', label: 'pending', color: 'gold' },
+      { value: 'in_progress', label: 'in_progress', color: 'processing' },
+      { value: 'completed', label: 'completed', color: 'green' },
+      { value: 'cancelled', label: 'cancelled', color: 'volcano' },
+    ],
+  },
+  dueDate: {
+    type: 'date',
+    label: 'Due Date',
+  },
+  client: {
+    type: 'search',
+    label: 'Client',
+    entity: 'client',
+    displayLabels: ['name'],
+    searchFields: 'name',
+    dataIndex: ['client', 'name'],
+    withRedirect: true,
+    urlToRedirect: '/customer',
+    redirectLabel: 'Add New Client',
+  },
+  description: {
+    type: 'textarea',
+    label: 'Description',
+    disableForTable: true,
+  },
+};
