@@ -1,6 +1,6 @@
-const { modelsFiles } = require('@/models/utils');
+﻿const { modelsFiles } = require('@/models/utils');
 
-const mongoose = require('mongoose');
+const mongoose = require('@/db');
 
 const create = require('./create');
 const bulkCreate = require('./bulkCreate');

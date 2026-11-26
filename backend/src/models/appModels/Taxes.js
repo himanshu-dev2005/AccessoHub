@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 
 const schema = new mongoose.Schema({
   removed: {
@@ -31,6 +31,5 @@ const schema = new mongoose.Schema({
   },
 });
 
-schema.plugin(require('mongoose-autopopulate'));
 
 module.exports = mongoose.model('Taxes', schema);

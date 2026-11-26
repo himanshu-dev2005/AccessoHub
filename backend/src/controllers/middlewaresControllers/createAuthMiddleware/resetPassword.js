@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
+﻿const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Joi = require('joi');
-const mongoose = require('mongoose');
+const mongoose = require('@/db');
 
 const shortid = require('shortid');
 

@@ -1,8 +1,9 @@
+require('module-alias/register');
 require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.local' });
 
-const mongoose = require('mongoose');
-mongoose.connect(process.env.DATABASE);
+const db = require('../db');
+db.connect();
 
 async function deleteData() {
   const Admin = require('../models/coreModels/Admin');

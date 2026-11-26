@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 
 const productSchema = new mongoose.Schema({
   removed: {
@@ -83,6 +83,5 @@ productSchema.pre('save', function (next) {
   next();
 });
 
-productSchema.plugin(require('mongoose-autopopulate'));
 
 module.exports = mongoose.model('Product', productSchema);

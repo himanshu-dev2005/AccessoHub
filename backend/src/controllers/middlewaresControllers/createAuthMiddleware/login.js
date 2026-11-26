@@ -1,10 +1,12 @@
 const Joi = require('joi');
 
-const mongoose = require('mongoose');
+const mongoose = require('@/db');
+const ensureInitialized = require('@/db/ensureInitialized');
 
 const authUser = require('./authUser');
 
 const login = async (req, res, { userModel }) => {
+  await ensureInitialized();
   const UserPasswordModel = mongoose.model(userModel + 'Password');
   const UserModel = mongoose.model(userModel);
   const { email, password } = req.body;

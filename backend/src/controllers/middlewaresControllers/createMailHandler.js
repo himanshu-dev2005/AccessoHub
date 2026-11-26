@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 const { Resend } = require('resend');
 const { loadSettings } = require('@/middlewares/settings');
 const { useAppSettings } = require('@/settings');

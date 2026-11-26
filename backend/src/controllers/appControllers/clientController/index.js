@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 const createCRUDController = require('@/controllers/middlewaresControllers/createCRUDController');
 
 const summary = require('./summary');

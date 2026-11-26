@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('@/db');
 const moment = require('moment');
 
 const InvoiceModel = mongoose.model('Invoice');
@@ -18,68 +18,27 @@ const summary = async (Model, req, res) => {
   }
 
   const currentDate = moment();
-  let startDate = currentDate.clone().startOf(defaultType);
-  let endDate = currentDate.clone().endOf(defaultType);
+  const startDate = currentDate.clone().startOf(defaultType).toDate();
+  const endDate = currentDate.clone().endOf(defaultType).toDate();
 
-  const pipeline = [
-    {
-      $facet: {
-        totalClients: [
-          {
-            $match: {
-              removed: false,
-              enabled: true,
-            },
-          },
-          {
-            $count: 'count',
-          },
-        ],
-        newClients: [
-          {
-            $match: {
-              removed: false,
-              created: { $gte: startDate.toDate(), $lte: endDate.toDate() },
-              enabled: true,
-            },
-          },
-          {
-            $count: 'count',
-          },
-        ],
-        activeClients: [
-          {
-            $lookup: {
-              from: InvoiceModel.collection.name,
-              localField: '_id', // Match _id from ClientModel
-              foreignField: 'client', // Match client field in InvoiceModel
-              as: 'invoice',
-            },
-          },
-          {
-            $match: {
-              'invoice.removed': false,
-            },
-          },
-          {
-            $group: {
-              _id: '$_id',
-            },
-          },
-          {
-            $count: 'count',
-          },
-        ],
-      },
-    },
-  ];
+  const [clients, invoices] = await Promise.all([
+    Model.find({ removed: false }).skipPopulate().exec(),
+    InvoiceModel.find({ removed: false }).skipPopulate().exec(),
+  ]);
 
-  const aggregationResult = await Model.aggregate(pipeline);
+  const activeClientIds = new Set();
+  for (const inv of invoices) {
+    const clientId = inv.client && typeof inv.client === 'object' ? inv.client._id : inv.client;
+    if (clientId) activeClientIds.add(String(clientId));
+  }
 
-  const result = aggregationResult[0];
-  const totalClients = result.totalClients[0] ? result.totalClients[0].count : 0;
-  const totalNewClients = result.newClients[0] ? result.newClients[0].count : 0;
-  const activeClients = result.activeClients[0] ? result.activeClients[0].count : 0;
+  const enabledClients = clients.filter((c) => c.enabled !== false);
+  const totalClients = enabledClients.length;
+  const totalNewClients = enabledClients.filter((c) => {
+    const created = c.created ? new Date(c.created) : null;
+    return created && created >= startDate && created <= endDate;
+  }).length;
+  const activeClients = clients.filter((c) => activeClientIds.has(String(c._id))).length;
 
   const totalActiveClientsPercentage = totalClients > 0 ? (activeClients / totalClients) * 100 : 0;
   const totalNewClientsPercentage = totalClients > 0 ? (totalNewClients / totalClients) * 100 : 0;

@@ -1,5 +1,5 @@
-import { useLayoutEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { Suspense, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Layout } from 'antd';
 
 import Navigation from '@/apps/Navigation/NavigationContainer';
@@ -8,7 +8,6 @@ import PageLoader from '@/components/PageLoader';
 import FooterContent from '@/layout/Footer';
 
 import { settingsAction } from '@/redux/settings/actions';
-import { selectSettings } from '@/redux/settings/selectors';
 
 import AppRouter from '@/router/AppRouter';
 import useResponsive from '@/hooks/useResponsive';
@@ -18,15 +17,9 @@ export default function CrmApp() {
   const { isMobile } = useResponsive();
   const dispatch = useDispatch();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     dispatch(settingsAction.list({ entity: 'setting' }));
   }, [dispatch]);
-
-  const { isSuccess: settingIsloaded } = useSelector(selectSettings);
-
-  if (!settingIsloaded) {
-    return <PageLoader />;
-  }
 
   return (
     <Layout hasSider style={{ minHeight: '100vh' }}>
@@ -43,7 +36,9 @@ export default function CrmApp() {
             maxWidth: isMobile ? 'none' : 1440,
           }}
         >
-          <AppRouter />
+          <Suspense fallback={<PageLoader />}>
+            <AppRouter />
+          </Suspense>
         </Content>
         <FooterContent />
       </Layout>

@@ -1,41 +1,31 @@
-const mongoose = require('mongoose');
+const mongoose = require('@/db');
 
 const Model = mongoose.model('Product');
 
 const summary = async (req, res) => {
-  const response = await Model.aggregate([
-    { $match: { removed: false } },
-    {
-      $group: {
-        _id: null,
-        count: { $sum: 1 },
-        totalStock: { $sum: '$stock' },
-        inventoryValue: {
-          $sum: {
-            $multiply: [{ $ifNull: ['$retailPrice', '$price'] }, '$stock'],
-          },
-        },
-        lowStockCount: {
-          $sum: { $cond: [{ $lte: ['$stock', 5] }, 1, 0] },
-        },
-      },
-    },
-  ]);
+  const products = await Model.find({ removed: false }).skipPopulate().exec();
 
-  const stats = response[0] || {
-    count: 0,
-    totalStock: 0,
-    inventoryValue: 0,
-    lowStockCount: 0,
-  };
+  let count = 0;
+  let totalStock = 0;
+  let inventoryValue = 0;
+  let lowStockCount = 0;
+
+  for (const p of products) {
+    count += 1;
+    const stock = Number(p.stock || 0);
+    const unitPrice = Number(p.retailPrice ?? p.price ?? 0);
+    totalStock += stock;
+    inventoryValue += unitPrice * stock;
+    if (stock <= 5) lowStockCount += 1;
+  }
 
   return res.status(200).json({
     success: true,
     result: {
-      count: stats.count,
-      totalStock: stats.totalStock,
-      total: stats.inventoryValue,
-      lowStock: stats.lowStockCount,
+      count,
+      totalStock,
+      total: inventoryValue,
+      lowStock: lowStockCount,
     },
     message: 'Successfully fetched product summary',
   });

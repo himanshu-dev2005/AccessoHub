@@ -5,7 +5,7 @@ import { Avatar, Dropdown, Layout, Tag } from 'antd';
 import { LogoutOutlined, ToolOutlined, UserOutlined } from '@ant-design/icons';
 
 import { selectCurrentAdmin } from '@/redux/auth/selectors';
-import { FILE_BASE_URL } from '@/config/serverApiConfig';
+import { resolveFileUrl } from '@/config/serverApiConfig';
 import useLanguage from '@/locale/useLanguage';
 
 import UpgradeButton from './UpgradeButton';
@@ -22,7 +22,7 @@ export default function HeaderContent() {
         <Avatar
           size="large"
           className="last"
-          src={currentAdmin?.photo ? FILE_BASE_URL + currentAdmin?.photo : undefined}
+          src={resolveFileUrl(currentAdmin?.photo)}
           style={{
             color: '#1E40AF',
             backgroundColor: currentAdmin?.photo ? 'none' : '#DBEAFE',
@@ -98,7 +98,7 @@ export default function HeaderContent() {
         >
           <Avatar
             className="last"
-            src={currentAdmin?.photo ? FILE_BASE_URL + currentAdmin?.photo : undefined}
+            src={resolveFileUrl(currentAdmin?.photo)}
             style={{
               color: '#1E40AF',
               backgroundColor: currentAdmin?.photo ? 'none' : '#DBEAFE',

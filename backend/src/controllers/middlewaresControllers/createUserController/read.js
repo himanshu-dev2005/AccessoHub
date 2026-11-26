@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 
 const read = async (userModel, req, res) => {
   const User = mongoose.model(userModel);

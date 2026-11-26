@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 
 const productCategorySchema = new mongoose.Schema({
   removed: {
@@ -33,6 +33,5 @@ const productCategorySchema = new mongoose.Schema({
   },
 });
 
-productCategorySchema.plugin(require('mongoose-autopopulate'));
 
 module.exports = mongoose.model('ProductCategory', productCategorySchema);

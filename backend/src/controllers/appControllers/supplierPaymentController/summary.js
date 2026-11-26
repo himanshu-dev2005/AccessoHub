@@ -1,29 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require('@/db');
 
 const Model = mongoose.model('SupplierPayment');
 
 const summary = async (req, res) => {
-  const response = await Model.aggregate([
-    { $match: { removed: false } },
-    {
-      $group: {
-        _id: null,
-        count: { $sum: 1 },
-        total: { $sum: '$amount' },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        count: 1,
-        total: 1,
-      },
-    },
-  ]);
+  const payments = await Model.find({ removed: false }).skipPopulate().exec();
+  const count = payments.length;
+  const total = payments.reduce((sum, p) => sum + Number(p.amount || 0), 0);
 
   return res.status(200).json({
     success: true,
-    result: response[0] || { count: 0, total: 0 },
+    result: { count, total },
     message: 'Successfully fetched supplier payment summary',
   });
 };

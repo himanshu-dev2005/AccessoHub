@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 
 const settingSchema = new mongoose.Schema({
   removed: {

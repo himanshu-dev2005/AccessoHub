@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 const { increaseBySettingKey, loadSettings } = require('@/middlewares/settings');
 
 const Quote = mongoose.model('Quote');

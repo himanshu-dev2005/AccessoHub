@@ -1,39 +1,30 @@
 require('module-alias/register');
-const mongoose = require('mongoose');
-const { globSync } = require('glob');
-const path = require('path');
+const db = require('@/db');
+const registerModels = require('@/db/registerModels');
 
-// Make sure we are running node 7.6+
-const [major, minor] = process.versions.node.split('.').map(parseFloat);
+// Make sure we are running node 20+
+const [major] = process.versions.node.split('.').map(parseFloat);
 if (major < 20) {
-  console.log('Please upgrade your node.js version at least 20 or greater. 👌\n ');
+  console.log('Please upgrade your node.js version at least 20 or greater.\n ');
   process.exit();
 }
 
-// import environmental variables from our variables.env file
+// import environmental variables from our .env files
 require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.local' });
 
-mongoose.connect(process.env.DATABASE);
+registerModels();
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
-mongoose.connection.on('error', (error) => {
+db.connect().catch((error) => {
   console.log(
-    `1. 🔥 Common Error caused issue → : check your .env file first and add your mongodb url`
+    '1. Common Error caused issue -> check your Firebase credentials in .env (FIREBASE_SERVICE_ACCOUNT or FIREBASE_PROJECT_ID/FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY)'
   );
-  console.error(`2. 🚫 Error → : ${error.message}`);
+  console.error(`2. Error -> : ${error.message}`);
 });
-
-const modelsFiles = globSync('./src/models/**/*.js');
-
-for (const filePath of modelsFiles) {
-  require(path.resolve(filePath));
-}
 
 // Start our app!
 const app = require('./app');
 app.set('port', process.env.PORT || 8888);
 const server = app.listen(app.get('port'), () => {
-  console.log(`Express running → On PORT : ${server.address().port}`);
+  console.log(`Express running -> On PORT : ${server.address().port}`);
 });

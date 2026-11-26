@@ -10,49 +10,46 @@ const singleStorageUpload = ({
   uploadFieldName = 'file',
   fieldName = 'file',
 }) => {
-  var diskStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, `src/public/uploads/${entity}`);
-    },
-    filename: function (req, file, cb) {
-      try {
-        // fetching the file extension of the uploaded file
-        let fileExtension = path.extname(file.originalname);
-        let uniqueFileID = Math.random().toString(36).slice(2, 7); // generates unique ID of length 5
+  const filterType = fileFilter(fileType);
+  const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 2 * 1024 * 1024 },
+    fileFilter: filterType,
+  }).single(uploadFieldName);
 
-        let originalname = '';
-        if (req.body.seotitle) {
-          originalname = slugify(req.body.seotitle.toLocaleLowerCase()); // convert any language to English characters
-        } else {
-          originalname = slugify(file.originalname.split('.')[0].toLocaleLowerCase()); // convert any language to English characters
-        }
-
-        let _fileName = `${originalname}-${uniqueFileID}${fileExtension}`;
-
-        const filePath = `public/uploads/${entity}/${_fileName}`;
-        // saving file name and extension in request upload object
-        req.upload = {
-          fileName: _fileName,
-          fieldExt: fileExtension,
-          entity: entity,
-          fieldName: fieldName,
-          fileType: fileType,
-          filePath: filePath,
-        };
-
-        req.body[fieldName] = filePath;
-
-        cb(null, _fileName);
-      } catch (error) {
-        cb(error); // pass the error to the callback
+  return (req, res, next) => {
+    upload(req, res, (err) => {
+      if (err) {
+        return res.status(400).json({
+          success: false,
+          result: null,
+          message: err.message || 'File upload failed',
+        });
       }
-    },
-  });
 
-  let filterType = fileFilter(fileType);
+      if (req.file) {
+        const fileExtension = path.extname(req.file.originalname);
+        const uniqueFileID = Math.random().toString(36).slice(2, 7);
+        const baseName = req.body?.seotitle
+          ? slugify(String(req.body.seotitle).toLocaleLowerCase())
+          : slugify(req.file.originalname.split('.')[0].toLocaleLowerCase());
+        const fileName = `${baseName}-${uniqueFileID}${fileExtension}`;
+        const dataUri = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
-  const multerStorage = multer({ storage: diskStorage, fileFilter: filterType }).single('file');
-  return multerStorage;
+        req.upload = {
+          fileName,
+          fieldExt: fileExtension,
+          entity,
+          fieldName,
+          fileType,
+          filePath: dataUri,
+        };
+        req.body[fieldName] = dataUri;
+      }
+
+      next();
+    });
+  };
 };
 
 module.exports = singleStorageUpload;

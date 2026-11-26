@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { selectCurrentAdmin } from '@/redux/auth/selectors';
 
 import useLanguage from '@/locale/useLanguage';
-import { FILE_BASE_URL } from '@/config/serverApiConfig';
+import { resolveFileUrl } from '@/config/serverApiConfig';
 
 const AdminInfo = ({ config }) => {
   const translate = useLanguage();
@@ -56,7 +56,7 @@ const AdminInfo = ({ config }) => {
         <Col xs={{ span: 24 }} sm={{ span: 7 }} md={{ span: 5 }}>
           <Avatar
             className="last left"
-            src={currentAdmin?.photo ? FILE_BASE_URL + currentAdmin?.photo : undefined}
+            src={resolveFileUrl(currentAdmin?.photo)}
             size={96}
             style={{
               color: '#f56a00',

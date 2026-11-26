@@ -1,17 +1,49 @@
 import * as actionTypes from './types';
 
-const INITIAL_SETTINGS_STATE = {
+const DEFAULT_SETTINGS_STATE = {
   crm_settings: {},
   finance_settings: {},
   company_settings: {},
   app_settings: {},
-  money_format_settings: {},
+  money_format_settings: {
+    default_currency_code: 'INR',
+    currency_symbol: '₹',
+    currency_position: 'before',
+    decimal_sep: '.',
+    thousand_sep: ',',
+    cent_precision: 2,
+    zero_format: false,
+  },
 };
 
+function loadCachedSettings() {
+  try {
+    const raw = window.localStorage.getItem('settings');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        return {
+          ...DEFAULT_SETTINGS_STATE,
+          ...parsed,
+          money_format_settings: {
+            ...DEFAULT_SETTINGS_STATE.money_format_settings,
+            ...(parsed.money_format_settings || {}),
+          },
+        };
+      }
+    }
+  } catch {
+    // Ignore storage parse error
+  }
+  return null;
+}
+
+const cachedSettings = loadCachedSettings();
+
 const INITIAL_STATE = {
-  result: INITIAL_SETTINGS_STATE,
+  result: cachedSettings || DEFAULT_SETTINGS_STATE,
   isLoading: false,
-  isSuccess: false,
+  isSuccess: Boolean(cachedSettings),
 };
 
 const settingsReducer = (state = INITIAL_STATE, action) => {

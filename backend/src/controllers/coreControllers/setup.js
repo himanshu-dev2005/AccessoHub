@@ -1,11 +1,10 @@
 require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.local' });
-const { globSync } = require('glob');
 const fs = require('fs');
 const Joi = require('joi');
 const { generate: uniqueId } = require('shortid');
 
-const mongoose = require('mongoose');
+const mongoose = require('@/db');
 
 const setup = async (req, res) => {
   const Admin = mongoose.model('Admin');
@@ -56,8 +55,21 @@ const setup = async (req, res) => {
   };
   await new AdminPassword(AdminPasswordData).save();
 
-  const settingData = [];
-  const settingsFiles = globSync('./src/setup/defaultSettings/**/*.json');
+const path = require('path');
+
+function getJsonFiles(dir) {
+  const results = [];
+  if (!fs.existsSync(dir)) return results;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) results.push(...getJsonFiles(fullPath));
+    else if (entry.name.endsWith('.json')) results.push(fullPath);
+  }
+  return results;
+}
+
+const settingData = [];
+const settingsFiles = getJsonFiles(path.resolve(__dirname, '../../setup/defaultSettings'));
 
   for (const filePath of settingsFiles) {
     const file = JSON.parse(fs.readFileSync(filePath, 'utf-8'));

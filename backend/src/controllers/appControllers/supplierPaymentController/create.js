@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 const { calculate } = require('@/helpers');
 const { loadSettings } = require('@/middlewares/settings');
 

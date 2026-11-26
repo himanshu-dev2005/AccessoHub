@@ -1,17 +1,25 @@
-const { basename, extname } = require('path');
-const { globSync } = require('glob');
+const fs = require('fs');
+const path = require('path');
+const { basename, extname } = path;
 
-const appModelsFiles = globSync('./src/models/appModels/**/*.js');
+const modelsDir = path.resolve(__dirname, '..');
+const appModelsDir = path.join(modelsDir, 'appModels');
+const coreModelsDir = path.join(modelsDir, 'coreModels');
 
-const pattern = './src/models/**/*.js';
+const listJsFiles = (dir) =>
+  fs.existsSync(dir)
+    ? fs
+        .readdirSync(dir)
+        .filter((f) => f.endsWith('.js'))
+        .map((f) => path.join(dir, f))
+    : [];
 
-const modelsFiles = globSync(pattern).map((filePath) => {
+const appModelsFiles = listJsFiles(appModelsDir);
+const allModelFiles = [...listJsFiles(coreModelsDir), ...appModelsFiles];
+
+const modelsFiles = allModelFiles.map((filePath) => {
   const fileNameWithExtension = basename(filePath);
-  const fileNameWithoutExtension = fileNameWithExtension.replace(
-    extname(fileNameWithExtension),
-    ''
-  );
-  return fileNameWithoutExtension;
+  return fileNameWithExtension.replace(extname(fileNameWithExtension), '');
 });
 
 const constrollersList = [];
@@ -33,7 +41,7 @@ for (const filePath of appModelsFiles) {
   );
   const entity = fileNameWithoutExtension.toLowerCase();
 
-  controllerName = fileNameLowerCaseFirstChar + 'Controller';
+  const controllerName = fileNameLowerCaseFirstChar + 'Controller';
   constrollersList.push(controllerName);
   appModelsList.push(modelName);
   entityList.push(entity);
@@ -43,6 +51,7 @@ for (const filePath of appModelsFiles) {
     modelName: modelName,
     controllerName: controllerName,
   };
+
   routesList.push(route);
 }
 

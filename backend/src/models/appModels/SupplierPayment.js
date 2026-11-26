@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 
 const supplierPaymentSchema = new mongoose.Schema({
   removed: {
@@ -64,6 +64,5 @@ const supplierPaymentSchema = new mongoose.Schema({
   },
 });
 
-supplierPaymentSchema.plugin(require('mongoose-autopopulate'));
 
 module.exports = mongoose.model('SupplierPayment', supplierPaymentSchema);

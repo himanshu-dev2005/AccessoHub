@@ -1,57 +1,41 @@
-const mongoose = require('mongoose');
+const mongoose = require('@/db');
 
 const Model = mongoose.model('SupplierPurchase');
 
 const summary = async (req, res) => {
   const statuses = ['draft', 'ordered', 'received', 'cancelled'];
+  const purchases = await Model.find({ removed: false }).skipPopulate().exec();
 
-  const response = await Model.aggregate([
-    { $match: { removed: false } },
-    {
-      $facet: {
-        totals: [
-          {
-            $group: {
-              _id: null,
-              count: { $sum: 1 },
-              total: { $sum: '$total' },
-              paid: { $sum: '$paidAmount' },
-            },
-          },
-        ],
-        statusCounts: [
-          {
-            $group: {
-              _id: '$status',
-              count: { $sum: 1 },
-            },
-          },
-        ],
-      },
-    },
-  ]);
+  const count = purchases.length;
+  let total = 0;
+  let paid = 0;
+  const statusCounts = {};
 
-  const totals = response[0].totals[0] || { count: 0, total: 0, paid: 0 };
-  const statusCounts = response[0].statusCounts || [];
+  for (const item of purchases) {
+    total += Number(item.total || 0);
+    paid += Number(item.paidAmount || 0);
+    if (item.status) {
+      statusCounts[item.status] = (statusCounts[item.status] || 0) + 1;
+    }
+  }
 
   const performance = statuses.map((status) => {
-    const found = statusCounts.find((s) => s._id === status);
-    const count = found ? found.count : 0;
+    const statusCount = statusCounts[status] || 0;
     return {
       status,
-      count,
-      percentage: totals.count > 0 ? Math.round((count / totals.count) * 100) : 0,
+      count: statusCount,
+      percentage: count > 0 ? Math.round((statusCount / count) * 100) : 0,
     };
   });
 
-  const totalDue = Math.max(0, (totals.total || 0) - (totals.paid || 0));
+  const totalDue = Math.max(0, total - paid);
 
   return res.status(200).json({
     success: true,
     result: {
-      count: totals.count,
-      total: totals.total,
-      paid: totals.paid,
+      count,
+      total,
+      paid,
       total_due: totalDue,
       performance,
     },

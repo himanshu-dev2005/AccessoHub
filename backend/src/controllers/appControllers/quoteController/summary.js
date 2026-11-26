@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('@/db');
 
 const Model = mongoose.model('Quote');
 
@@ -19,63 +19,27 @@ const summary = async (req, res) => {
   }
 
   const statuses = ['draft', 'pending', 'sent', 'accepted', 'declined', 'expired'];
+  const quotes = await Model.find({ removed: false }).skipPopulate().exec();
 
-  const response = await Model.aggregate([
-    {
-      $match: {
-        removed: false,
-      },
-    },
-    {
-      $facet: {
-        totalQuote: [
-          {
-            $group: {
-              _id: null,
-              total: { $sum: '$total' },
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              total: '$total',
-              count: '$count',
-            },
-          },
-        ],
-        statusCounts: [
-          {
-            $group: {
-              _id: '$status',
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              status: '$_id',
-              count: '$count',
-            },
-          },
-        ],
-      },
-    },
-  ]);
+  const totalCount = quotes.length;
+  let totalAmount = 0;
+  const statusCounts = {};
 
-  const totalQuotes = response[0].totalQuote[0] || { total: 0, count: 0 };
-  const statusResult = response[0].statusCounts || [];
+  for (const quote of quotes) {
+    totalAmount += Number(quote.total || 0);
+    if (quote.status) {
+      statusCounts[quote.status] = (statusCounts[quote.status] || 0) + 1;
+    }
+  }
 
   const result = [];
-  const totalCount = totalQuotes.count || 0;
-
   statuses.forEach((status) => {
-    const found = statusResult.find((item) => item.status === status);
-    if (found && totalCount > 0) {
+    const count = statusCounts[status] || 0;
+    if (count > 0 && totalCount > 0) {
       result.push({
-        status: found.status,
-        count: found.count,
-        percentage: Math.round((found.count / totalCount) * 100),
+        status,
+        count,
+        percentage: Math.round((count / totalCount) * 100),
       });
     }
   });
@@ -83,7 +47,7 @@ const summary = async (req, res) => {
   return res.status(200).json({
     success: true,
     result: {
-      total: totalQuotes.total || 0,
+      total: totalAmount,
       type: defaultType,
       performance: result,
     },

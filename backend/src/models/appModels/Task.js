@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('@/db');
 
 const taskSchema = new mongoose.Schema({
   removed: {
@@ -50,6 +50,5 @@ const taskSchema = new mongoose.Schema({
   },
 });
 
-taskSchema.plugin(require('mongoose-autopopulate'));
 
 module.exports = mongoose.model('Task', taskSchema);

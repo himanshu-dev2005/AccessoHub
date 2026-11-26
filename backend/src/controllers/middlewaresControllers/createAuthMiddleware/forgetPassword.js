@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const mongoose = require('mongoose');
+﻿const Joi = require('joi');
+const mongoose = require('@/db');
 const shortid = require('shortid');
 
 const checkAndCorrectURL = require('./checkAndCorrectURL');

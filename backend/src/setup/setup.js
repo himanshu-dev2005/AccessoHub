@@ -1,11 +1,23 @@
+require('module-alias/register');
 require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.local' });
-const { globSync } = require('glob');
+const path = require('path');
 const fs = require('fs');
 const { generate: uniqueId } = require('shortid');
 
-const mongoose = require('mongoose');
-mongoose.connect(process.env.DATABASE);
+const db = require('../db');
+db.connect();
+
+function getJsonFiles(dir) {
+  const results = [];
+  if (!fs.existsSync(dir)) return results;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) results.push(...getJsonFiles(fullPath));
+    else if (entry.name.endsWith('.json')) results.push(fullPath);
+  }
+  return results;
+}
 
 async function setupApp() {
   try {
@@ -37,7 +49,7 @@ async function setupApp() {
 
     const Setting = require('../models/coreModels/Setting');
     const settingFiles = [];
-    const settingsFiles = globSync('./src/setup/defaultSettings/**/*.json');
+    const settingsFiles = getJsonFiles(path.resolve(__dirname, 'defaultSettings'));
 
     for (const filePath of settingsFiles) {
       const file = JSON.parse(fs.readFileSync(filePath, 'utf-8'));

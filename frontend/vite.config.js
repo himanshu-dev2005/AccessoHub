@@ -19,6 +19,29 @@ export default ({ mode }) => {
         '@': path.resolve(__dirname, 'src'),
       },
     },
+    build: {
+      target: 'es2020',
+      minify: 'esbuild',
+      cssCodeSplit: true,
+      sourcemap: false,
+      chunkSizeWarningLimit: 1200,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': [
+              'react',
+              'react-dom',
+              'react-router-dom',
+              'react-redux',
+              '@reduxjs/toolkit',
+            ],
+            'vendor-antd': ['antd'],
+            'vendor-icons': ['@ant-design/icons'],
+            'vendor-xlsx': ['xlsx'],
+          },
+        },
+      },
+    },
     server: {
       port: 3000,
       proxy: {
