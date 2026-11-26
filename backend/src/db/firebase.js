@@ -11,6 +11,18 @@ function onCacheClear(fn) {
   cacheClearListeners.add(fn);
 }
 
+function normalizePrivateKey(key) {
+  if (!key || typeof key !== 'string') return key;
+  let cleaned = key.trim();
+  if (
+    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+    (cleaned.startsWith("'") && cleaned.endsWith("'"))
+  ) {
+    cleaned = cleaned.slice(1, -1);
+  }
+  return cleaned.replace(/\\n/g, '\n');
+}
+
 function parseServiceAccountFromEnv() {
   const rawJson = process.env.FIREBASE_SERVICE_ACCOUNT;
   if (rawJson) {
@@ -20,7 +32,7 @@ function parseServiceAccountFromEnv() {
       : Buffer.from(trimmed, 'base64').toString('utf8');
     const parsed = JSON.parse(jsonText);
     if (parsed.private_key && typeof parsed.private_key === 'string') {
-      parsed.private_key = parsed.private_key.replace(/\\n/g, '\n');
+      parsed.private_key = normalizePrivateKey(parsed.private_key);
     }
     return parsed;
   }
@@ -31,9 +43,9 @@ function parseServiceAccountFromEnv() {
 
   if (projectId && clientEmail && privateKey) {
     return {
-      project_id: projectId,
-      client_email: clientEmail,
-      private_key: privateKey.replace(/\\n/g, '\n'),
+      project_id: projectId.trim(),
+      client_email: clientEmail.trim(),
+      private_key: normalizePrivateKey(privateKey),
     };
   }
 
