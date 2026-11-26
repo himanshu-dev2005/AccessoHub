@@ -1,6 +1,6 @@
-﻿const mongoose = require('@/db');
-const { calculate } = require('@/helpers');
-const { loadSettings } = require('@/middlewares/settings');
+﻿const mongoose = require('../../../db');
+const { calculate } = require('../../../helpers');
+const { loadSettings } = require('../../../middlewares/settings');
 
 const Model = mongoose.model('SupplierPayment');
 const SupplierPurchase = mongoose.model('SupplierPurchase');

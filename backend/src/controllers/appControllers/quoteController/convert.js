@@ -1,5 +1,5 @@
-﻿const mongoose = require('@/db');
-const { increaseBySettingKey, loadSettings } = require('@/middlewares/settings');
+﻿const mongoose = require('../../../db');
+const { increaseBySettingKey, loadSettings } = require('../../../middlewares/settings');
 
 const Quote = mongoose.model('Quote');
 const Invoice = mongoose.model('Invoice');

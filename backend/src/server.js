@@ -1,6 +1,5 @@
-require('module-alias/register');
-const db = require('@/db');
-const registerModels = require('@/db/registerModels');
+const db = require('./db');
+const registerModels = require('./db/registerModels');
 
 // Make sure we are running node 20+
 const [major] = process.versions.node.split('.').map(parseFloat);

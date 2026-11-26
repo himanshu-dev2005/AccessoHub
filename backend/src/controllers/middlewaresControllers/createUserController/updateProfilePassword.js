@@ -1,4 +1,4 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../../../db');
 const bcrypt = require('bcryptjs');
 
 const { generate: uniqueId } = require('shortid');

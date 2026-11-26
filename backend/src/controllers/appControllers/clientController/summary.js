@@ -1,4 +1,4 @@
-const mongoose = require('@/db');
+const mongoose = require('../../../db');
 const moment = require('moment');
 
 const InvoiceModel = mongoose.model('Invoice');

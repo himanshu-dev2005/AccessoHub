@@ -1,4 +1,4 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../../db');
 
 const schema = new mongoose.Schema({
   removed: {

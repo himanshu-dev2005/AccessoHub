@@ -1,4 +1,4 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../../../db');
 
 const updateProfile = async (userModel, req, res) => {
   const User = mongoose.model(userModel);

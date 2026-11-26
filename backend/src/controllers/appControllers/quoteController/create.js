@@ -1,9 +1,9 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../../../db');
 
 const Model = mongoose.model('Quote');
 
-const { calculate } = require('@/helpers');
-const { increaseBySettingKey, loadSettings } = require('@/middlewares/settings');
+const { calculate } = require('../../../helpers');
+const { increaseBySettingKey, loadSettings } = require('../../../middlewares/settings');
 const schema = require('./schemaValidate');
 
 const create = async (req, res) => {

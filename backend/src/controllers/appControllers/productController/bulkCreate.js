@@ -1,5 +1,5 @@
-﻿const mongoose = require('@/db');
-const { loadSettings } = require('@/middlewares/settings');
+﻿const mongoose = require('../../../db');
+const { loadSettings } = require('../../../middlewares/settings');
 
 const Product = mongoose.model('Product');
 const ProductCategory = mongoose.model('ProductCategory');

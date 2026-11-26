@@ -1,5 +1,5 @@
-﻿const mongoose = require('@/db');
-const { calculate } = require('@/helpers');
+﻿const mongoose = require('../../../db');
+const { calculate } = require('../../../helpers');
 
 const Model = mongoose.model('SupplierPurchase');
 const Product = mongoose.model('Product');

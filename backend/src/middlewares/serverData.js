@@ -1,4 +1,4 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../db');
 exports.getData = ({ model }) => {
   const Model = mongoose.model(model);
   const result = Model.find({ removed: false, enabled: true });

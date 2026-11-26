@@ -1,5 +1,5 @@
-const createMailHandler = require('@/controllers/middlewaresControllers/createMailHandler');
-const { SendQuote } = require('@/emailTemplate/SendEmailTemplate');
+const createMailHandler = require('../../middlewaresControllers/createMailHandler');
+const { SendQuote } = require('../../../emailTemplate/SendEmailTemplate');
 
 module.exports = createMailHandler({
   modelName: 'Quote',

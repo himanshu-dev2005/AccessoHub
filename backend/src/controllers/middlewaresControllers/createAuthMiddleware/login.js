@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
-const mongoose = require('@/db');
-const ensureInitialized = require('@/db/ensureInitialized');
+const mongoose = require('../../../db');
+const ensureInitialized = require('../../../db/ensureInitialized');
 
 const authUser = require('./authUser');
 

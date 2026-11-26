@@ -1,8 +1,8 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../../../db');
 
 const Model = mongoose.model('Quote');
 
-const { calculate } = require('@/helpers');
+const { calculate } = require('../../../helpers');
 const schema = require('./schemaValidate');
 
 const update = async (req, res) => {

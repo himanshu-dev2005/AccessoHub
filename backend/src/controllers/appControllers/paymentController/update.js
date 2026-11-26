@@ -1,10 +1,10 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../../../db');
 
 const Model = mongoose.model('Payment');
 const Invoice = mongoose.model('Invoice');
-const custom = require('@/controllers/pdfController');
+const custom = require('../../pdfController');
 
-const { calculate } = require('@/helpers');
+const { calculate } = require('../../../helpers');
 
 const update = async (req, res) => {
   if (req.body.amount === 0) {

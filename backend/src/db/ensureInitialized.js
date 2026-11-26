@@ -1,20 +1,15 @@
-const fs = require('fs');
-const path = require('path');
 const { generate: uniqueId } = require('shortid');
 const db = require('./index');
 
-let checkedOnce = false;
+const appSettings = require('../setup/defaultSettings/appSettings.json');
+const clientSettings = require('../setup/defaultSettings/clientSettings.json');
+const companySettings = require('../setup/defaultSettings/companySettings.json');
+const financeSettings = require('../setup/defaultSettings/financeSettings.json');
+const invoiceSettings = require('../setup/defaultSettings/invoiceSettings.json');
+const moneyFormatSettings = require('../setup/defaultSettings/moneyFormatSettings.json');
+const quoteSettings = require('../setup/defaultSettings/quoteSettings.json');
 
-function getJsonFiles(dir) {
-  const results = [];
-  if (!fs.existsSync(dir)) return results;
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) results.push(...getJsonFiles(fullPath));
-    else if (entry.name.endsWith('.json')) results.push(fullPath);
-  }
-  return results;
-}
+let checkedOnce = false;
 
 async function ensureInitialized() {
   if (checkedOnce) return;
@@ -52,12 +47,15 @@ async function ensureInitialized() {
 
   const settingsCount = await Setting.countDocuments({});
   if (settingsCount === 0) {
-    const settingData = [];
-    const files = getJsonFiles(path.resolve(__dirname, '../setup/defaultSettings'));
-    for (const filePath of files) {
-      const parsed = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-      if (Array.isArray(parsed)) settingData.push(...parsed);
-    }
+    const settingData = [
+      ...appSettings,
+      ...clientSettings,
+      ...companySettings,
+      ...financeSettings,
+      ...invoiceSettings,
+      ...moneyFormatSettings,
+      ...quoteSettings,
+    ];
     if (settingData.length > 0) {
       await Setting.insertMany(settingData);
     }

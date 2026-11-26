@@ -1,20 +1,27 @@
-const fs = require('fs');
-const path = require('path');
-
 let registered = false;
 
 function registerModels() {
   if (registered) return;
-  const modelsRoot = path.resolve(__dirname, '../models');
 
-  for (const subDir of ['coreModels', 'appModels']) {
-    const dirPath = path.join(modelsRoot, subDir);
-    if (!fs.existsSync(dirPath)) continue;
-    const files = fs.readdirSync(dirPath).filter((f) => f.endsWith('.js')).sort();
-    for (const file of files) {
-      require(path.join(dirPath, file));
-    }
-  }
+  // Core models
+  require('../models/coreModels/Admin');
+  require('../models/coreModels/AdminPassword');
+  require('../models/coreModels/Setting');
+  require('../models/coreModels/Upload');
+
+  // App models
+  require('../models/appModels/Client');
+  require('../models/appModels/Invoice');
+  require('../models/appModels/Payment');
+  require('../models/appModels/PaymentMode');
+  require('../models/appModels/Product');
+  require('../models/appModels/ProductCategory');
+  require('../models/appModels/Quote');
+  require('../models/appModels/Supplier');
+  require('../models/appModels/SupplierPayment');
+  require('../models/appModels/SupplierPurchase');
+  require('../models/appModels/Task');
+  require('../models/appModels/Taxes');
 
   registered = true;
 }

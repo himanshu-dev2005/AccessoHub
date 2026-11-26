@@ -1,5 +1,5 @@
-const createMailHandler = require('@/controllers/middlewaresControllers/createMailHandler');
-const { SendPaymentReceipt } = require('@/emailTemplate/SendEmailTemplate');
+const createMailHandler = require('../../middlewaresControllers/createMailHandler');
+const { SendPaymentReceipt } = require('../../../emailTemplate/SendEmailTemplate');
 
 module.exports = createMailHandler({
   modelName: 'Payment',

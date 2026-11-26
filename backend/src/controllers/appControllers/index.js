@@ -1,34 +1,22 @@
-const createCRUDController = require('@/controllers/middlewaresControllers/createCRUDController');
-const { routesList } = require('@/models/utils');
+const createCRUDController = require('../middlewaresControllers/createCRUDController');
+const { routesList } = require('../../models/utils');
 
-const fs = require('fs');
-const path = require('path');
-
-const controllersBaseDir = __dirname;
-const controllerDirectories = fs
-  .readdirSync(controllersBaseDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name);
+const customControllers = {
+  clientController: require('./clientController'),
+  invoiceController: require('./invoiceController'),
+  paymentController: require('./paymentController'),
+  productController: require('./productController'),
+  quoteController: require('./quoteController'),
+  supplierPaymentController: require('./supplierPaymentController'),
+  supplierPurchaseController: require('./supplierPurchaseController'),
+  taskController: require('./taskController'),
+};
 
 const appControllers = () => {
-  const controllers = {};
-  const hasCustomControllers = [];
-
-  controllerDirectories.forEach((controllerName) => {
-    try {
-      const customController = require('@/controllers/appControllers/' + controllerName);
-
-      if (customController) {
-        hasCustomControllers.push(controllerName);
-        controllers[controllerName] = customController;
-      }
-    } catch (err) {
-      throw new Error(err.message);
-    }
-  });
+  const controllers = { ...customControllers };
 
   routesList.forEach(({ modelName, controllerName }) => {
-    if (!hasCustomControllers.includes(controllerName)) {
+    if (!controllers[controllerName]) {
       controllers[controllerName] = createCRUDController(modelName);
     }
   });

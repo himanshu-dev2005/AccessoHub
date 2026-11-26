@@ -1,10 +1,10 @@
 ﻿const Joi = require('joi');
-const mongoose = require('@/db');
+const mongoose = require('../../../db');
 const shortid = require('shortid');
 
 const checkAndCorrectURL = require('./checkAndCorrectURL');
 const sendMail = require('./sendMail');
-const { useAppSettings } = require('@/settings');
+const { useAppSettings } = require('../../../settings');
 
 const forgetPassword = async (req, res, { userModel }) => {
   const UserPassword = mongoose.model(userModel + 'Password');

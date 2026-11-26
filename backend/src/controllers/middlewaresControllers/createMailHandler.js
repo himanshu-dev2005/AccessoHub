@@ -1,7 +1,7 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../../db');
 const { Resend } = require('resend');
-const { loadSettings } = require('@/middlewares/settings');
-const { useAppSettings } = require('@/settings');
+const { loadSettings } = require('../../middlewares/settings');
+const { useAppSettings } = require('../../settings');
 
 const createMailHandler = ({ modelName, label, templateBuilder }) => {
   return async (req, res) => {

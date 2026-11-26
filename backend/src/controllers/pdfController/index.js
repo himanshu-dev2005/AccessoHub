@@ -1,8 +1,8 @@
 const PDFDocument = require('pdfkit');
 const moment = require('moment');
-const { loadSettings } = require('@/middlewares/settings');
-const useLanguage = require('@/locale/useLanguage');
-const { useMoney, useDate } = require('@/settings');
+const { loadSettings } = require('../../middlewares/settings');
+const useLanguage = require('../../locale/useLanguage');
+const { useMoney, useDate } = require('../../settings');
 
 const supportedTypes = ['invoice', 'offer', 'quote', 'payment'];
 

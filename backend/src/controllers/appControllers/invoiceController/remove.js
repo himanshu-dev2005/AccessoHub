@@ -1,4 +1,4 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../../../db');
 
 const Model = mongoose.model('Invoice');
 const ModelPayment = mongoose.model('Payment');

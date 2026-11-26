@@ -1,5 +1,5 @@
-﻿const mongoose = require('@/db');
-const createCRUDController = require('@/controllers/middlewaresControllers/createCRUDController');
+﻿const mongoose = require('../../../db');
+const createCRUDController = require('../../middlewaresControllers/createCRUDController');
 
 const summary = require('./summary');
 

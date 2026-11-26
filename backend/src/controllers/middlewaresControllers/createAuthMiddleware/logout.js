@@ -1,4 +1,4 @@
-﻿const mongoose = require('@/db');
+﻿const mongoose = require('../../../db');
 
 const logout = async (req, res, { userModel }) => {
   const UserPassword = mongoose.model(userModel + 'Password');
