@@ -18,6 +18,8 @@ module.exports = (req, res) => {
     return res.status(500).json({
       success: false,
       message: bootError.message || 'Server initialization failed',
+      stack: bootError.stack,
+      nodeVersion: process.version,
     });
   }
   return app(req, res);

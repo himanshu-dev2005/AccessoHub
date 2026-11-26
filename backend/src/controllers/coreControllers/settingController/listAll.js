@@ -1,4 +1,4 @@
-﻿const mongoose = require('../../../db');
+const mongoose = require('../../../db');
 const ensureInitialized = require('../../../db/ensureInitialized');
 const Model = mongoose.model('Setting');
 

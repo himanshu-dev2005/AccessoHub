@@ -1,4 +1,4 @@
-﻿const mongoose = require('../../../db');
+const mongoose = require('../../../db');
 const { DEFAULT_ADMIN_ID, revokeDefaultAdminToken } = require('./defaultAdminAuth');
 
 const logout = async (req, res, { userModel }) => {
