@@ -40,16 +40,17 @@ const LoginPage = () => {
           requiredMark={false}
         >
           <LoginForm />
-          <Form.Item style={{ marginBottom: 0, marginTop: 8 }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-form-button"
-              loading={isLoading}
-              size="large"
+          <Form.Item style={{ marginBottom: 0, marginTop: 12 }}>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-10 rounded-lg text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-150 flex items-center justify-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
             >
+              {isLoading && (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              )}
               {translate('Log in')}
-            </Button>
+            </button>
           </Form.Item>
         </Form>
       </Loading>
