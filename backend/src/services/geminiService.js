@@ -1,14 +1,22 @@
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
 
 async function askGemini(prompt, systemPrompt = 'You are a helpful assistant.') {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
+    throw new Error(
+      'GEMINI_API_KEY is not configured. Please set your GEMINI_API_KEY in your environment settings (e.g. Vercel Project Settings > Environment Variables).'
+    );
+  }
+
   const res = await fetch(GEMINI_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.GEMINI_API_KEY || ''}`,
+      Authorization: `Bearer ${apiKey}`,
     },
+    signal: AbortSignal.timeout(12000),
     body: JSON.stringify({
-      model: 'gemini-3.8-flash',
+      model: 'gemini-1.5-flash',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: prompt },
