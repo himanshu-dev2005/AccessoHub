@@ -2,8 +2,8 @@
 import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const Dashboard = lazy(() => import('@/pages/ModernDashboard'));
-const Customer = lazy(() => import('@/pages/ModernContacts'));
+const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const Customer = lazy(() => import('@/pages/Customer'));
 const Task = lazy(() => import('@/pages/Task'));
 
 const ProductCategory = lazy(() => import('@/pages/ProductCategory'));
