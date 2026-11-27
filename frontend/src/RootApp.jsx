@@ -1,3 +1,4 @@
+import './style/tailwind.css';
 import './style/app.css';
 
 import { Suspense, lazy } from 'react';
