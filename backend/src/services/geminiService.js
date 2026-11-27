@@ -14,7 +14,7 @@ async function askGemini(prompt, systemPrompt = 'You are a helpful assistant.') 
     },
     signal: AbortSignal.timeout(15000),
     body: JSON.stringify({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: prompt },
