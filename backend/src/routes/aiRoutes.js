@@ -11,5 +11,7 @@ router.post('/ai/email', asyncHandler(aiController.draftEmail));
 router.post('/ai/invoice', asyncHandler(aiController.smartInvoice));
 router.post('/ai/insights', asyncHandler(aiController.financialInsights));
 router.post('/ai/predictions', asyncHandler(aiController.paymentPrediction));
+router.post('/ai/scan', asyncHandler(aiController.scanDocument));
+router.post('/ai/meeting-notes', asyncHandler(aiController.summarizeMeeting));
 
 module.exports = router;

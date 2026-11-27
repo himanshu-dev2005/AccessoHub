@@ -29,6 +29,8 @@ import {
   FileTextOutlined,
   BarChartOutlined,
   ExperimentOutlined,
+  ScanOutlined,
+  AudioOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -173,6 +175,16 @@ function Sidebar({ collapsible, isMobile = false }) {
           key: 'ai/predictions',
           icon: <ExperimentOutlined />,
           label: <Link to={'/ai/predictions'}>Payment Predictions</Link>,
+        },
+        {
+          key: 'ai/scanner',
+          icon: <ScanOutlined />,
+          label: <Link to={'/ai/scanner'}>AI Document Scanner</Link>,
+        },
+        {
+          key: 'ai/notes',
+          icon: <AudioOutlined />,
+          label: <Link to={'/ai/notes'}>AI Meeting Notes</Link>,
         },
       ],
     },
