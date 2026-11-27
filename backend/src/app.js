@@ -21,6 +21,7 @@ const adminAuth = require('./controllers/coreControllers/adminAuth');
 
 const errorHandlers = require('./handlers/errorHandlers');
 const erpApiRouter = require('./routes/appRoutes/appApi');
+const aiRouter = require('./routes/aiRoutes');
 
 // create our Express app
 const app = express();
@@ -47,6 +48,7 @@ app.use(compression({ threshold: 512 }));
 app.use('/api', coreAuthRouter);
 app.use('/api', adminAuth.isValidAuthToken, coreApiRouter);
 app.use('/api', adminAuth.isValidAuthToken, erpApiRouter);
+app.use('/api', adminAuth.isValidAuthToken, aiRouter);
 app.use('/download', coreDownloadRouter);
 app.use('/public', corePublicRouter);
 

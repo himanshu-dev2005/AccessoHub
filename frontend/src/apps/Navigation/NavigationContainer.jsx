@@ -24,6 +24,11 @@ import {
   TeamOutlined,
   ShoppingCartOutlined,
   BankOutlined,
+  RobotOutlined,
+  MailOutlined,
+  FileTextOutlined,
+  BarChartOutlined,
+  ExperimentOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -145,6 +150,32 @@ function Sidebar({ collapsible, isMobile = false }) {
         },
       ],
     },
+    {
+      type: 'group',
+      label: !showLogoApp ? 'AI TOOLS' : '',
+      children: [
+        {
+          key: 'ai/email',
+          icon: <MailOutlined />,
+          label: <Link to={'/ai/email'}>AI Email Drafter</Link>,
+        },
+        {
+          key: 'ai/invoice',
+          icon: <FileTextOutlined />,
+          label: <Link to={'/ai/invoice'}>Smart Invoice</Link>,
+        },
+        {
+          key: 'ai/insights',
+          icon: <BarChartOutlined />,
+          label: <Link to={'/ai/insights'}>Financial Insights</Link>,
+        },
+        {
+          key: 'ai/predictions',
+          icon: <ExperimentOutlined />,
+          label: <Link to={'/ai/predictions'}>Payment Predictions</Link>,
+        },
+      ],
+    },
   ];
 
   useEffect(() => {
@@ -153,6 +184,8 @@ function Sidebar({ collapsible, isMobile = false }) {
       setCurrentPath('dashboard');
     } else if (location.pathname.startsWith('/payment/mode')) {
       setCurrentPath('payment/mode');
+    } else if (location.pathname.startsWith('/ai/')) {
+      setCurrentPath(location.pathname.slice(1)); // e.g., 'ai/email'
     } else {
       const rootSegment = location.pathname.split('/')[1] || 'dashboard';
       setCurrentPath(rootSegment);

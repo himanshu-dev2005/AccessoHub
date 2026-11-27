@@ -36,6 +36,11 @@ const About = lazy(() => import('@/pages/About'));
 const Logout = lazy(() => import('@/pages/Logout.jsx'));
 const NotFound = lazy(() => import('@/pages/NotFound.jsx'));
 
+const AiEmailDrafter = lazy(() => import('@/pages/AiEmailDrafter'));
+const AiSmartInvoice = lazy(() => import('@/pages/AiSmartInvoice'));
+const AiFinancialInsights = lazy(() => import('@/pages/AiFinancialInsights'));
+const AiPaymentPrediction = lazy(() => import('@/pages/AiPaymentPrediction'));
+
 let routes = {
   expense: [],
   default: [
@@ -150,6 +155,22 @@ let routes = {
     {
       path: '/profile',
       element: <Profile />,
+    },
+    {
+      path: '/ai/email',
+      element: <AiEmailDrafter />,
+    },
+    {
+      path: '/ai/invoice',
+      element: <AiSmartInvoice />,
+    },
+    {
+      path: '/ai/insights',
+      element: <AiFinancialInsights />,
+    },
+    {
+      path: '/ai/predictions',
+      element: <AiPaymentPrediction />,
     },
     {
       path: '*',
