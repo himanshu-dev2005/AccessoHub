@@ -1,21 +1,13 @@
 import { Suspense, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Layout } from 'antd';
-
-import Navigation from '@/apps/Navigation/NavigationContainer';
-import HeaderContent from '@/apps/Header/HeaderContainer';
 import PageLoader from '@/components/PageLoader';
-import FooterContent from '@/layout/Footer';
 import AiChatbot from '@/components/AiChatbot';
-
+import ModernLayout from '@/layout/ModernLayout';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { settingsAction } from '@/redux/settings/actions';
-
 import AppRouter from '@/router/AppRouter';
-import useResponsive from '@/hooks/useResponsive';
 
 export default function CrmApp() {
-  const { Content } = Layout;
-  const { isMobile } = useResponsive();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,27 +15,13 @@ export default function CrmApp() {
   }, [dispatch]);
 
   return (
-    <Layout hasSider style={{ minHeight: '100vh' }}>
-      <Navigation />
-
-      <Layout style={{ marginLeft: 0, background: '#F1F5F9' }}>
-        <HeaderContent />
-        <Content
-          style={{
-            margin: isMobile ? '20px auto 24px' : '28px auto 32px',
-            overflow: 'initial',
-            width: '100%',
-            padding: isMobile ? '0 16px' : '0 36px',
-            maxWidth: isMobile ? 'none' : 1440,
-          }}
-        >
-          <Suspense fallback={<PageLoader />}>
-            <AppRouter />
-          </Suspense>
-        </Content>
-        <FooterContent />
-      </Layout>
-      <AiChatbot />
-    </Layout>
+    <ErrorBoundary>
+      <ModernLayout>
+        <Suspense fallback={<PageLoader />}>
+          <AppRouter />
+        </Suspense>
+        <AiChatbot />
+      </ModernLayout>
+    </ErrorBoundary>
   );
 }
