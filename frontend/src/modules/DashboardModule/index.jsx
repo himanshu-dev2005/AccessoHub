@@ -21,6 +21,7 @@ import RecentTable from './components/RecentTable';
 import SummaryCard from './components/SummaryCard';
 import PreviewCard from './components/PreviewCard';
 import CustomerPreviewCard from './components/CustomerPreviewCard';
+import WholesaleRetailSalesChart from './components/WholesaleRetailSalesChart';
 
 export default function DashboardModule() {
   const translate = useLanguage();
@@ -200,6 +201,10 @@ export default function DashboardModule() {
           data={paymentResult?.total}
         />
       </Row>
+
+      <div className="space20"></div>
+
+      <WholesaleRetailSalesChart />
 
       <div className="space20"></div>
 

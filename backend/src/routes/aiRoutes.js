@@ -8,7 +8,6 @@ const asyncHandler = (fn) => (req, res, next) => {
 
 router.post('/ai/chat', asyncHandler(aiController.chatbot));
 router.post('/ai/email', asyncHandler(aiController.draftEmail));
-router.post('/ai/invoice', asyncHandler(aiController.smartInvoice));
 router.post('/ai/insights', asyncHandler(aiController.financialInsights));
 router.post('/ai/churn-radar', asyncHandler(aiController.churnRadar));
 router.post('/ai/margin-optimizer', asyncHandler(aiController.marginOptimizer));

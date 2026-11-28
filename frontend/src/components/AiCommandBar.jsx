@@ -92,14 +92,14 @@ export default function AiCommandBar() {
         onClick={() => setOpen(true)}
         style={{
           position: 'fixed',
-          bottom: 24,
-          left: 24,
+          bottom: 20,
+          left: 16,
           zIndex: 999,
           borderRadius: 999,
           boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
         }}
       >
-        AI Copilot <Tag style={{ marginLeft: 6, marginRight: 0 }}>Ctrl+K</Tag>
+        AI Copilot
       </Button>
 
       <Modal

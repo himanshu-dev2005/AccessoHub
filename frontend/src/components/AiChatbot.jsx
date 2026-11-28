@@ -61,11 +61,11 @@ export default function AiChatbot() {
         onClick={() => setOpen(true)}
         style={{
           position: 'fixed',
-          bottom: 28,
-          right: 28,
+          bottom: 20,
+          right: 20,
           zIndex: 9999,
-          width: 58,
-          height: 58,
+          width: 52,
+          height: 52,
           borderRadius: '50%',
           background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
           display: 'flex',
@@ -78,20 +78,23 @@ export default function AiChatbot() {
         onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
         onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
       >
-        <RobotOutlined style={{ fontSize: 26, color: '#fff' }} />
+        <RobotOutlined style={{ fontSize: 24, color: '#fff' }} />
       </div>
     );
   }
+
+  const isSmallScreen = typeof window !== 'undefined' && window.innerWidth < 520;
 
   return (
     <div
       style={{
         position: 'fixed',
-        bottom: 28,
-        right: 28,
+        bottom: isSmallScreen ? 12 : 24,
+        right: isSmallScreen ? 12 : 24,
         zIndex: 9999,
-        width: 390,
-        height: 540,
+        width: isSmallScreen ? 'calc(100vw - 24px)' : 390,
+        maxWidth: 'calc(100vw - 24px)',
+        height: isSmallScreen ? 'min(500px, calc(100vh - 90px))' : 540,
         borderRadius: 16,
         overflow: 'hidden',
         display: 'flex',

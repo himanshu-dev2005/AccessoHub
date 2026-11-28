@@ -26,7 +26,6 @@ import {
   BankOutlined,
   RobotOutlined,
   MailOutlined,
-  FileTextOutlined,
   BarChartOutlined,
   RadarChartOutlined,
   FundProjectionScreenOutlined,
@@ -160,11 +159,6 @@ function Sidebar({ collapsible, isMobile = false }) {
           key: 'ai/email',
           icon: <MailOutlined />,
           label: <Link to={'/ai/email'}>AI Email Drafter</Link>,
-        },
-        {
-          key: 'ai/invoice',
-          icon: <FileTextOutlined />,
-          label: <Link to={'/ai/invoice'}>Smart Invoice</Link>,
         },
         {
           key: 'ai/insights',

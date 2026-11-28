@@ -100,14 +100,6 @@ async function askGeminiJSON(prompt, systemPrompt = 'You are a helpful assistant
         closing: 'Best regards,\nAccessoHub Team',
       };
     }
-    if (systemPrompt.includes('invoice data extractor')) {
-      return {
-        client: 'Sample Client Corp',
-        items: [{ name: 'Services Rendered', description: 'Extracted invoice line item', quantity: 1, price: 5000 }],
-        taxRate: 18,
-        notes: 'Connect GEMINI_API_KEY in Vercel for live natural language invoice extraction.',
-      };
-    }
     if (systemPrompt.includes('financial analyst')) {
       return {
         summary: 'AccessoHub AI financial engine is active. Add your GEMINI_API_KEY to unlock automated live financial analytics.',

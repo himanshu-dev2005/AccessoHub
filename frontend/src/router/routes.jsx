@@ -37,7 +37,6 @@ const Logout = lazy(() => import('@/pages/Logout.jsx'));
 const NotFound = lazy(() => import('@/pages/NotFound.jsx'));
 
 const AiEmailDrafter = lazy(() => import('@/pages/AiEmailDrafter'));
-const AiSmartInvoice = lazy(() => import('@/pages/AiSmartInvoice'));
 const AiFinancialInsights = lazy(() => import('@/pages/AiFinancialInsights'));
 const AiChurnRadar = lazy(() => import('@/pages/AiChurnRadar'));
 const AiMarginOptimizer = lazy(() => import('@/pages/AiMarginOptimizer'));
@@ -161,10 +160,6 @@ let routes = {
     {
       path: '/ai/email',
       element: <AiEmailDrafter />,
-    },
-    {
-      path: '/ai/invoice',
-      element: <AiSmartInvoice />,
     },
     {
       path: '/ai/insights',

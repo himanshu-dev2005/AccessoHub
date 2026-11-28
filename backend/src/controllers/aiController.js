@@ -47,28 +47,7 @@ Purpose: ${context}`;
     }
   },
 
-  // 3. Smart Invoice Generator
-  async smartInvoice(req, res) {
-    try {
-      const { description } = req.body;
-      if (!description)
-        return res.status(400).json({ success: false, message: 'Description is required' });
-
-      const systemPrompt = `You are an invoice data extractor for AccessoHub CRM.
-Parse the natural language description into structured invoice data.
-Return JSON with: { "client": "string", "items": [{"name": "string", "description": "string", "quantity": number, "price": number}], "taxRate": number, "notes": "string" }
-taxRate should be a percentage number (e.g., 18 for 18%). Infer reasonable defaults for missing fields.
-price should be per-unit price as a number.`;
-
-      const result = await askGeminiJSON(description, systemPrompt);
-      return res.json({ success: true, result });
-    } catch (error) {
-      console.error('Smart invoice error:', error.message);
-      return res.status(500).json({ success: false, message: error.message });
-    }
-  },
-
-  // 4. Financial Insights
+  // 3. Financial Insights
   async financialInsights(req, res) {
     try {
       const { data } = req.body;
@@ -164,7 +143,7 @@ Return JSON with:
       const systemPrompt = `You are the Command Copilot for AccessoHub CRM.
 Map the user's natural language command to ONE of these JSON actions:
 1. Navigate to a page:
-   { "action": "navigate", "path": "/| /customer | /task | /product | /productcategory | /supplier | /supplierpurchase | /supplierpayment | /quote | /invoice | /payment | /settings | /ai/email | /ai/invoice | /ai/insights | /ai/churn-radar | /ai/margin-optimizer | /ai/cashflow-bridge", "label": "friendly page name" }
+   { "action": "navigate", "path": "/| /customer | /task | /product | /productcategory | /supplier | /supplierpurchase | /supplierpayment | /quote | /invoice | /payment | /settings | /ai/email | /ai/insights | /ai/churn-radar | /ai/margin-optimizer | /ai/cashflow-bridge", "label": "friendly page name" }
 2. Create a CRM task:
    { "action": "create_task", "task": { "title": "string", "type": "call|email|meeting|follow_up|demo|other", "priority": "low|medium|high|urgent", "description": "string" } }
 3. Create a customer:
