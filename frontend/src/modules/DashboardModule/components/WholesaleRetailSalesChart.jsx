@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Card, Row, Col, Segmented, Statistic, Tag, Progress, Tooltip, Empty, Spin } from 'antd';
-import { BarChartOutlined, ShopOutlined, ShoppingOutlined } from '@ant-design/icons';
+import { LineChartOutlined, ShopOutlined, ShoppingOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { request } from '@/request';
 import { useMoney } from '@/settings';
@@ -9,6 +9,12 @@ function formatCompact(num) {
   if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
   if (num >= 1000) return `${(num / 1000).toFixed(0)}k`;
   return `${Math.round(num)}`;
+}
+
+function buildSmoothPath(points) {
+  if (points.length === 0) return '';
+  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+  return points.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`).join(' ');
 }
 
 export default function WholesaleRetailSalesChart() {
@@ -35,9 +41,7 @@ export default function WholesaleRetailSalesChart() {
         setClientMap(map);
         setInvoices(invRes?.result || []);
       } catch {
-        if (active) {
-          setInvoices([]);
-        }
+        if (active) setInvoices([]);
       } finally {
         if (active) setLoading(false);
       }
@@ -110,15 +114,38 @@ export default function WholesaleRetailSalesChart() {
   const retailPct = combined > 0 ? 100 - wholesalePct : 0;
 
   const svgWidth = 680;
-  const svgHeight = 230;
-  const padLeft = 48;
-  const padRight = 16;
-  const padTop = 16;
-  const padBottom = 32;
+  const svgHeight = 240;
+  const padLeft = 50;
+  const padRight = 24;
+  const padTop = 20;
+  const padBottom = 34;
   const plotW = svgWidth - padLeft - padRight;
   const plotH = svgHeight - padTop - padBottom;
-  const groupW = plotW / Math.max(1, months.length);
-  const barW = Math.min(24, Math.max(10, groupW * 0.28));
+  const stepX = months.length > 1 ? plotW / (months.length - 1) : plotW;
+
+  const wholesalePoints = months.map((m, idx) => ({
+    x: months.length > 1 ? padLeft + stepX * idx : padLeft + plotW / 2,
+    y: padTop + plotH - (m.wholesale / maxMonthly) * plotH,
+    data: m,
+  }));
+
+  const retailPoints = months.map((m, idx) => ({
+    x: months.length > 1 ? padLeft + stepX * idx : padLeft + plotW / 2,
+    y: padTop + plotH - (m.retail / maxMonthly) * plotH,
+    data: m,
+  }));
+
+  const wholesaleLine = buildSmoothPath(wholesalePoints);
+  const retailLine = buildSmoothPath(retailPoints);
+  const baselineY = padTop + plotH;
+  const wholesaleArea =
+    wholesalePoints.length > 1
+      ? `${wholesaleLine} L ${wholesalePoints[wholesalePoints.length - 1].x.toFixed(1)} ${baselineY} L ${wholesalePoints[0].x.toFixed(1)} ${baselineY} Z`
+      : '';
+  const retailArea =
+    retailPoints.length > 1
+      ? `${retailLine} L ${retailPoints[retailPoints.length - 1].x.toFixed(1)} ${baselineY} L ${retailPoints[0].x.toFixed(1)} ${baselineY} Z`
+      : '';
 
   return (
     <Card
@@ -138,11 +165,11 @@ export default function WholesaleRetailSalesChart() {
       >
         <div>
           <h3 style={{ margin: 0, color: '#0F172A', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <BarChartOutlined style={{ color: '#2563EB' }} />
-            Sales Overview: Wholesale vs. Retail
+            <LineChartOutlined style={{ color: '#2563EB' }} />
+            Sales Trend: Wholesale vs. Retail
           </h3>
           <span style={{ fontSize: 12, color: '#64748B' }}>
-            Monthly invoiced revenue split by customer category
+            Monthly invoiced revenue line graph split by customer category
           </span>
         </div>
 
@@ -198,8 +225,8 @@ export default function WholesaleRetailSalesChart() {
               size="small"
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#64748B', marginTop: 6 }}>
-              <span>● Wholesale</span>
-              <span>● Retail</span>
+              <span style={{ color: '#2563EB', fontWeight: 600 }}>● Wholesale</span>
+              <span style={{ color: '#10B981', fontWeight: 600 }}>● Retail</span>
             </div>
           </div>
         </Col>
@@ -217,8 +244,19 @@ export default function WholesaleRetailSalesChart() {
             viewBox={`0 0 ${svgWidth} ${svgHeight}`}
             style={{ width: '100%', minWidth: 420, height: 'auto', display: 'block' }}
             role="img"
-            aria-label="Wholesale vs Retail Sales Chart"
+            aria-label="Wholesale vs Retail Sales Line Graph"
           >
+            <defs>
+              <linearGradient id="wholesaleGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#2563EB" stopOpacity="0.18" />
+                <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="retailGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#10B981" stopOpacity="0.18" />
+                <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+
             {[0, 0.25, 0.5, 0.75, 1].map((t) => {
               const y = padTop + plotH - t * plotH;
               return (
@@ -244,13 +282,29 @@ export default function WholesaleRetailSalesChart() {
               );
             })}
 
-            {months.map((m, idx) => {
-              const centerX = padLeft + groupW * idx + groupW / 2;
-              const wH = (m.wholesale / maxMonthly) * plotH;
-              const rH = (m.retail / maxMonthly) * plotH;
-              const wY = padTop + plotH - wH;
-              const rY = padTop + plotH - rH;
+            {wholesaleArea && <path d={wholesaleArea} fill="url(#wholesaleGrad)" />}
+            {retailArea && <path d={retailArea} fill="url(#retailGrad)" />}
 
+            <path
+              d={wholesaleLine}
+              fill="none"
+              stroke="#2563EB"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d={retailLine}
+              fill="none"
+              stroke="#10B981"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+
+            {months.map((m, idx) => {
+              const wp = wholesalePoints[idx];
+              const rp = retailPoints[idx];
               return (
                 <Tooltip
                   key={m.key}
@@ -266,24 +320,11 @@ export default function WholesaleRetailSalesChart() {
                   }
                 >
                   <g style={{ cursor: 'pointer' }}>
-                    <rect
-                      x={centerX - barW - 2}
-                      y={wY}
-                      width={barW}
-                      height={Math.max(2, wH)}
-                      rx={4}
-                      fill="#2563EB"
-                    />
-                    <rect
-                      x={centerX + 2}
-                      y={rY}
-                      width={barW}
-                      height={Math.max(2, rH)}
-                      rx={4}
-                      fill="#10B981"
-                    />
+                    <circle cx={wp.x} cy={wp.y} r="4.5" fill="#2563EB" stroke="#fff" strokeWidth="1.5" />
+                    <circle cx={rp.x} cy={rp.y} r="4.5" fill="#10B981" stroke="#fff" strokeWidth="1.5" />
+                    <rect x={wp.x - 16} y={padTop} width={32} height={plotH} fill="transparent" />
                     <text
-                      x={centerX}
+                      x={wp.x}
                       y={svgHeight - 10}
                       textAnchor="middle"
                       fontSize="11"
