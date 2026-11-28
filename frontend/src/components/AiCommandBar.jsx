@@ -24,6 +24,7 @@ const QUICK_ROUTES = [
   { label: 'AI Meeting Notes', path: '/ai/notes' },
   { label: 'Silent Customer Churn Radar', path: '/ai/churn-radar' },
   { label: 'Smart Margin Optimizer', path: '/ai/margin-optimizer' },
+  { label: 'Cash-Flow & Working Capital Bridge', path: '/ai/cashflow-bridge' },
 ];
 
 export default function AiCommandBar() {

@@ -270,6 +270,46 @@ Choose the best matching action.`;
       return res.status(500).json({ success: false, message: error.message });
     }
   },
+
+  // 11. Cash-Flow & Working Capital Bridge
+  async cashflowBridge(req, res) {
+    try {
+      const { totalReceivable = 0, totalPayable = 0, netGap = 0, unpaidInvoices = [], unpaidPurchases = [] } = req.body;
+      const systemPrompt = `You are a cashflow bridge & working capital CFO AI for AccessoHub ERP/CRM.
+Compare customer receivables (money coming in) against supplier payables (money going out) and build a prioritized collection & payout plan.
+Return JSON with:
+{
+  "summary": "2-3 sentence assessment of working capital position",
+  "urgencyLevel": "low|medium|high",
+  "collectionPriority": [
+    {
+      "invoiceNumber": "string",
+      "client": "string",
+      "amountDue": number,
+      "reason": "why to collect this first"
+    }
+  ],
+  "paymentStrategy": ["actionable strategy 1", "actionable strategy 2"]
+}`;
+
+      const userPrompt = `Working Capital Snapshot:
+Total Receivable: ${totalReceivable}
+Total Payable: ${totalPayable}
+Net Bridge (Receivable - Payable): ${netGap}
+
+Top Unpaid Customer Invoices:
+${JSON.stringify(unpaidInvoices.slice(0, 15), null, 2)}
+
+Top Unpaid Supplier Purchases:
+${JSON.stringify(unpaidPurchases.slice(0, 15), null, 2)}`;
+
+      const result = await askGeminiJSON(userPrompt, systemPrompt);
+      return res.json({ success: true, result });
+    } catch (error) {
+      console.error('Cashflow bridge error:', error.message);
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  },
 };
 
 module.exports = aiController;

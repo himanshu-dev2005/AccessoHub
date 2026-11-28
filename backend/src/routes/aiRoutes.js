@@ -16,5 +16,6 @@ router.post('/ai/meeting-notes', asyncHandler(aiController.summarizeMeeting));
 router.post('/ai/churn-radar', asyncHandler(aiController.churnRadar));
 router.post('/ai/margin-optimizer', asyncHandler(aiController.marginOptimizer));
 router.post('/ai/command', asyncHandler(aiController.commandCopilot));
+router.post('/ai/cashflow-bridge', asyncHandler(aiController.cashflowBridge));
 
 module.exports = router;

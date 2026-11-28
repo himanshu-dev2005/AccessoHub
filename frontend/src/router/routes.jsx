@@ -44,6 +44,7 @@ const AiDocumentScanner = lazy(() => import('@/pages/AiDocumentScanner'));
 const AiMeetingNotes = lazy(() => import('@/pages/AiMeetingNotes'));
 const AiChurnRadar = lazy(() => import('@/pages/AiChurnRadar'));
 const AiMarginOptimizer = lazy(() => import('@/pages/AiMarginOptimizer'));
+const AiCashflowBridge = lazy(() => import('@/pages/AiCashflowBridge'));
 
 let routes = {
   expense: [],
@@ -191,6 +192,10 @@ let routes = {
     {
       path: '/ai/margin-optimizer',
       element: <AiMarginOptimizer />,
+    },
+    {
+      path: '/ai/cashflow-bridge',
+      element: <AiCashflowBridge />,
     },
     {
       path: '*',

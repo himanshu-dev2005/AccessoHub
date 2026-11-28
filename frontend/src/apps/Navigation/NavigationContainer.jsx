@@ -33,6 +33,7 @@ import {
   AudioOutlined,
   RadarChartOutlined,
   FundProjectionScreenOutlined,
+  SwapOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -197,6 +198,11 @@ function Sidebar({ collapsible, isMobile = false }) {
           key: 'ai/margin-optimizer',
           icon: <FundProjectionScreenOutlined />,
           label: <Link to={'/ai/margin-optimizer'}>Margin Optimizer</Link>,
+        },
+        {
+          key: 'ai/cashflow-bridge',
+          icon: <SwapOutlined />,
+          label: <Link to={'/ai/cashflow-bridge'}>Cash-Flow Bridge</Link>,
         },
       ],
     },

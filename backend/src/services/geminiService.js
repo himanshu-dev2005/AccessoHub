@@ -70,6 +70,24 @@ async function askGeminiJSON(prompt, systemPrompt = 'You are a helpful assistant
         ]
       };
     }
+    if (systemPrompt.includes('cashflow bridge')) {
+      return {
+        summary: 'Sample Cash-Flow Bridge: Prioritize collecting your largest overdue customer invoices first to cover upcoming supplier payables without dipping into reserves.',
+        urgencyLevel: 'medium',
+        collectionPriority: [
+          {
+            invoiceNumber: 'INV-Sample',
+            client: 'Sample Client',
+            amountDue: 15000,
+            reason: 'Collecting this covers immediate supplier obligations.'
+          }
+        ],
+        paymentStrategy: [
+          'Follow up on invoices past their expiry date before scheduling non-urgent supplier payouts.',
+          'Add GEMINI_API_KEY in Vercel for live AI working-capital prioritization.'
+        ]
+      };
+    }
     if (systemPrompt.includes('churn radar')) {
       return {
         summary: 'Sample Churn Radar: Detected accounts with extended inactivity. Add GEMINI_API_KEY in Vercel for live AI churn scoring.',
