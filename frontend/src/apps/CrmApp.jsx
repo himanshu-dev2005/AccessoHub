@@ -7,6 +7,7 @@ import HeaderContent from '@/apps/Header/HeaderContainer';
 import PageLoader from '@/components/PageLoader';
 import FooterContent from '@/layout/Footer';
 import AiChatbot from '@/components/AiChatbot';
+import AiCommandBar from '@/components/AiCommandBar';
 
 import { settingsAction } from '@/redux/settings/actions';
 
@@ -44,6 +45,7 @@ export default function CrmApp() {
         <FooterContent />
       </Layout>
       <AiChatbot />
+      <AiCommandBar />
     </Layout>
   );
 }

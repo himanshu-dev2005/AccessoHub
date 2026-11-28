@@ -42,6 +42,8 @@ const AiFinancialInsights = lazy(() => import('@/pages/AiFinancialInsights'));
 const AiPaymentPrediction = lazy(() => import('@/pages/AiPaymentPrediction'));
 const AiDocumentScanner = lazy(() => import('@/pages/AiDocumentScanner'));
 const AiMeetingNotes = lazy(() => import('@/pages/AiMeetingNotes'));
+const AiChurnRadar = lazy(() => import('@/pages/AiChurnRadar'));
+const AiMarginOptimizer = lazy(() => import('@/pages/AiMarginOptimizer'));
 
 let routes = {
   expense: [],
@@ -181,6 +183,14 @@ let routes = {
     {
       path: '/ai/notes',
       element: <AiMeetingNotes />,
+    },
+    {
+      path: '/ai/churn-radar',
+      element: <AiChurnRadar />,
+    },
+    {
+      path: '/ai/margin-optimizer',
+      element: <AiMarginOptimizer />,
     },
     {
       path: '*',

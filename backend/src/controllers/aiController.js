@@ -182,6 +182,94 @@ Return JSON with:
       return res.status(500).json({ success: false, message: error.message });
     }
   },
+
+  // 8. Silent Customer & Churn Radar
+  async churnRadar(req, res) {
+    try {
+      const { customers = [] } = req.body;
+      const systemPrompt = `You are a customer retention & churn radar AI for AccessoHub CRM.
+Analyze the provided customers and their activity/invoice metrics to identify silent or at-risk accounts.
+Return JSON with:
+{
+  "summary": "2-3 sentence overview of customer retention health",
+  "atRiskCustomers": [
+    {
+      "name": "customer name",
+      "email": "customer email if provided",
+      "daysSilent": number,
+      "riskLevel": "high|medium|low",
+      "reason": "why they are flagged",
+      "winBackOffer": "specific personalized win-back suggestion",
+      "suggestedEmailSubject": "compelling subject line"
+    }
+  ]
+}`;
+
+      const userPrompt = `Analyze these customers for churn/inactivity risk:\n${JSON.stringify(customers.slice(0, 30), null, 2)}`;
+      const result = await askGeminiJSON(userPrompt, systemPrompt);
+      return res.json({ success: true, result });
+    } catch (error) {
+      console.error('Churn radar error:', error.message);
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  },
+
+  // 9. Smart Margin & Supplier Profit Optimizer
+  async marginOptimizer(req, res) {
+    try {
+      const { products = [] } = req.body;
+      const systemPrompt = `You are a pricing & margin optimizer AI for AccessoHub ERP/CRM.
+Analyze the product catalog (retailPrice, wholesalePrice, purchaseCost, stock) and identify profit leaks, low-margin items, and restock opportunities.
+Return JSON with:
+{
+  "summary": "2-3 sentence overview of catalog profitability",
+  "recommendations": [
+    {
+      "productName": "product name",
+      "issue": "short description of margin/stock issue",
+      "action": "specific pricing or supplier negotiation action",
+      "priority": "high|medium|low"
+    }
+  ]
+}`;
+
+      const userPrompt = `Analyze these products for margin & stock optimization:\n${JSON.stringify(products.slice(0, 40), null, 2)}`;
+      const result = await askGeminiJSON(userPrompt, systemPrompt);
+      return res.json({ success: true, result });
+    } catch (error) {
+      console.error('Margin optimizer error:', error.message);
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  },
+
+  // 10. Command-Bar AI Copilot (Ctrl+K)
+  async commandCopilot(req, res) {
+    try {
+      const { command } = req.body;
+      if (!command || !command.trim()) {
+        return res.status(400).json({ success: false, message: 'Command is required' });
+      }
+
+      const systemPrompt = `You are the Command Copilot for AccessoHub CRM.
+Map the user's natural language command to ONE of these JSON actions:
+1. Navigate to a page:
+   { "action": "navigate", "path": "/| /customer | /task | /product | /productcategory | /supplier | /supplierpurchase | /supplierpayment | /quote | /invoice | /payment | /settings | /ai/email | /ai/invoice | /ai/insights | /ai/predictions | /ai/scanner | /ai/notes | /ai/churn-radar | /ai/margin-optimizer", "label": "friendly page name" }
+2. Create a CRM task:
+   { "action": "create_task", "task": { "title": "string", "type": "call|email|meeting|follow_up|demo|other", "priority": "low|medium|high|urgent", "description": "string" } }
+3. Create a customer:
+   { "action": "create_client", "client": { "name": "string", "company": "string", "email": "string", "phone": "string" } }
+4. Answer a general CRM question:
+   { "action": "answer", "reply": "concise helpful answer" }
+
+Choose the best matching action.`;
+
+      const result = await askGeminiJSON(command, systemPrompt);
+      return res.json({ success: true, result });
+    } catch (error) {
+      console.error('Command copilot error:', error.message);
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  },
 };
 
 module.exports = aiController;

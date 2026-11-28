@@ -70,6 +70,40 @@ async function askGeminiJSON(prompt, systemPrompt = 'You are a helpful assistant
         ]
       };
     }
+    if (systemPrompt.includes('churn radar')) {
+      return {
+        summary: 'Sample Churn Radar: Detected accounts with extended inactivity. Add GEMINI_API_KEY in Vercel for live AI churn scoring.',
+        atRiskCustomers: [
+          {
+            name: 'Sample Dormant Account',
+            daysSilent: 45,
+            riskLevel: 'high',
+            reason: 'No recent invoices or follow-up activity in the last 45 days.',
+            winBackOffer: 'Offer a 10% loyalty renewal discount or complimentary Q4 check-in.',
+            suggestedEmailSubject: 'Checking in + special loyalty offer for your team'
+          }
+        ]
+      };
+    }
+    if (systemPrompt.includes('margin optimizer')) {
+      return {
+        summary: 'Sample Margin Analysis: Review low-margin SKUs and reorder levels. Add GEMINI_API_KEY in Vercel for live SKU profitability insights.',
+        recommendations: [
+          {
+            productName: 'Sample SKU',
+            issue: 'Thin retail margin relative to purchase cost',
+            action: 'Consider a 5-8% retail price adjustment or negotiate bulk supplier pricing.',
+            priority: 'high'
+          }
+        ]
+      };
+    }
+    if (systemPrompt.includes('command copilot')) {
+      return {
+        action: 'answer',
+        reply: 'Command Copilot is ready! Try navigation commands like "go to invoices", "open document scanner", or configure GEMINI_API_KEY in Vercel for full natural-language CRM actions.'
+      };
+    }
     if (systemPrompt.includes('meeting notes')) {
       return {
         summary: 'Sample summary: Discussed Q4 onboarding timeline and pricing tier options. Connect GEMINI_API_KEY in Vercel to analyze live transcripts.',

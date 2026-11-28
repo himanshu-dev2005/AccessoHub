@@ -13,5 +13,8 @@ router.post('/ai/insights', asyncHandler(aiController.financialInsights));
 router.post('/ai/predictions', asyncHandler(aiController.paymentPrediction));
 router.post('/ai/scan', asyncHandler(aiController.scanDocument));
 router.post('/ai/meeting-notes', asyncHandler(aiController.summarizeMeeting));
+router.post('/ai/churn-radar', asyncHandler(aiController.churnRadar));
+router.post('/ai/margin-optimizer', asyncHandler(aiController.marginOptimizer));
+router.post('/ai/command', asyncHandler(aiController.commandCopilot));
 
 module.exports = router;

@@ -31,6 +31,8 @@ import {
   ExperimentOutlined,
   ScanOutlined,
   AudioOutlined,
+  RadarChartOutlined,
+  FundProjectionScreenOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -185,6 +187,16 @@ function Sidebar({ collapsible, isMobile = false }) {
           key: 'ai/notes',
           icon: <AudioOutlined />,
           label: <Link to={'/ai/notes'}>AI Meeting Notes</Link>,
+        },
+        {
+          key: 'ai/churn-radar',
+          icon: <RadarChartOutlined />,
+          label: <Link to={'/ai/churn-radar'}>Churn Radar</Link>,
+        },
+        {
+          key: 'ai/margin-optimizer',
+          icon: <FundProjectionScreenOutlined />,
+          label: <Link to={'/ai/margin-optimizer'}>Margin Optimizer</Link>,
         },
       ],
     },
