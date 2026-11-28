@@ -37,14 +37,19 @@ export default function AiChatbot() {
       const { data } = await axios.post(
         API_BASE_URL + 'ai/chat',
         { message: text, context: {} },
-        { headers: getAuthHeaders() }
+        { headers: getAuthHeaders(), withCredentials: true }
       );
-      setMessages((prev) => [...prev, { role: 'assistant', content: data.result.reply }]);
-    } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: '⚠️ Sorry, something went wrong. Please try again.' },
+        { role: 'assistant', content: data?.result?.reply || 'No response generated.' },
       ]);
+    } catch (err) {
+      const errMsg =
+        err.response?.data?.message ||
+        (err.response?.status === 401
+          ? 'Session expired. Please sign in again.'
+          : '⚠️ Sorry, something went wrong. Please try again.');
+      setMessages((prev) => [...prev, { role: 'assistant', content: errMsg }]);
     } finally {
       setLoading(false);
     }

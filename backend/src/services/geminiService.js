@@ -1,42 +1,53 @@
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
+const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+
+async function callNativeGemini(apiKey, model, prompt, systemPrompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    signal: AbortSignal.timeout(4500),
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 2048,
+      },
+    }),
+  });
+  return res;
+}
 
 async function askGemini(prompt, systemPrompt = 'You are a helpful assistant.') {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = (process.env.GEMINI_API_KEY || '').trim();
   if (!apiKey || apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
     return '👋 AccessoHub AI is connected and ready! To enable live Gemini responses, please add your **GEMINI_API_KEY** in your Vercel Project Settings > Environment Variables (get a free key at [aistudio.google.com](https://aistudio.google.com/apikey)).';
   }
 
-  try {
-    const res = await fetch(GEMINI_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      signal: AbortSignal.timeout(8000),
-      body: JSON.stringify({
-        model: 'gemini-3.8-flash',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: prompt },
-        ],
-        temperature: 0.7,
-        max_tokens: 2048,
-      }),
-    });
-
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('Gemini API error:', res.status, err);
-      return `⚠️ Gemini API returned status ${res.status}. Please ensure your GEMINI_API_KEY in Vercel environment variables is valid.`;
+  let lastError = '';
+  for (const model of GEMINI_MODELS) {
+    try {
+      const res = await callNativeGemini(apiKey, model, prompt, systemPrompt);
+      if (res.ok) {
+        const data = await res.json();
+        const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text).join('') || '';
+        if (text) return text;
+      } else {
+        const errBody = await res.text();
+        lastError = `Status ${res.status}`;
+        console.error(`Gemini (${model}) error:`, res.status, errBody.slice(0, 300));
+        // Don't retry if API key itself is invalid
+        if (res.status === 400 || res.status === 403) {
+          return `⚠️ Invalid or unauthorized GEMINI_API_KEY (${res.status}). Please check your key in Vercel Environment Variables.`;
+        }
+      }
+    } catch (err) {
+      lastError = err.message;
+      console.error(`Gemini (${model}) fetch error:`, err.message);
     }
-
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content || 'No response generated.';
-  } catch (err) {
-    console.error('Gemini fetch error:', err.message);
-    return `⚠️ AI connection note: ${err.message}. Please verify GEMINI_API_KEY in Vercel project settings.`;
   }
+
+  return `⚠️ AI could not reach Gemini (${lastError || 'timeout'}). Please verify your GEMINI_API_KEY in Vercel project settings.`;
 }
 
 async function askGeminiJSON(prompt, systemPrompt = 'You are a helpful assistant.') {
