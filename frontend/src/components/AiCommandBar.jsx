@@ -20,8 +20,6 @@ const QUICK_ROUTES = [
   { label: 'Tasks', path: '/task' },
   { label: 'Invoices', path: '/invoice' },
   { label: 'Products', path: '/product' },
-  { label: 'AI Document Scanner', path: '/ai/scanner' },
-  { label: 'AI Meeting Notes', path: '/ai/notes' },
   { label: 'Silent Customer Churn Radar', path: '/ai/churn-radar' },
   { label: 'Smart Margin Optimizer', path: '/ai/margin-optimizer' },
   { label: 'Cash-Flow & Working Capital Bridge', path: '/ai/cashflow-bridge' },

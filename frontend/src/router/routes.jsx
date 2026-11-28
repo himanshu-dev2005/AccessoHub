@@ -39,9 +39,6 @@ const NotFound = lazy(() => import('@/pages/NotFound.jsx'));
 const AiEmailDrafter = lazy(() => import('@/pages/AiEmailDrafter'));
 const AiSmartInvoice = lazy(() => import('@/pages/AiSmartInvoice'));
 const AiFinancialInsights = lazy(() => import('@/pages/AiFinancialInsights'));
-const AiPaymentPrediction = lazy(() => import('@/pages/AiPaymentPrediction'));
-const AiDocumentScanner = lazy(() => import('@/pages/AiDocumentScanner'));
-const AiMeetingNotes = lazy(() => import('@/pages/AiMeetingNotes'));
 const AiChurnRadar = lazy(() => import('@/pages/AiChurnRadar'));
 const AiMarginOptimizer = lazy(() => import('@/pages/AiMarginOptimizer'));
 const AiCashflowBridge = lazy(() => import('@/pages/AiCashflowBridge'));
@@ -172,18 +169,6 @@ let routes = {
     {
       path: '/ai/insights',
       element: <AiFinancialInsights />,
-    },
-    {
-      path: '/ai/predictions',
-      element: <AiPaymentPrediction />,
-    },
-    {
-      path: '/ai/scanner',
-      element: <AiDocumentScanner />,
-    },
-    {
-      path: '/ai/notes',
-      element: <AiMeetingNotes />,
     },
     {
       path: '/ai/churn-radar',

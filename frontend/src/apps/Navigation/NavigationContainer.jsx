@@ -28,9 +28,6 @@ import {
   MailOutlined,
   FileTextOutlined,
   BarChartOutlined,
-  ExperimentOutlined,
-  ScanOutlined,
-  AudioOutlined,
   RadarChartOutlined,
   FundProjectionScreenOutlined,
   SwapOutlined,
@@ -173,21 +170,6 @@ function Sidebar({ collapsible, isMobile = false }) {
           key: 'ai/insights',
           icon: <BarChartOutlined />,
           label: <Link to={'/ai/insights'}>Financial Insights</Link>,
-        },
-        {
-          key: 'ai/predictions',
-          icon: <ExperimentOutlined />,
-          label: <Link to={'/ai/predictions'}>Payment Predictions</Link>,
-        },
-        {
-          key: 'ai/scanner',
-          icon: <ScanOutlined />,
-          label: <Link to={'/ai/scanner'}>AI Document Scanner</Link>,
-        },
-        {
-          key: 'ai/notes',
-          icon: <AudioOutlined />,
-          label: <Link to={'/ai/notes'}>AI Meeting Notes</Link>,
         },
         {
           key: 'ai/churn-radar',

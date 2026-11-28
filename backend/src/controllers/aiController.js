@@ -1,4 +1,4 @@
-const { askGemini, askGeminiJSON, askGeminiVisionJSON } = require('../services/geminiService');
+const { askGemini, askGeminiJSON } = require('../services/geminiService');
 
 const aiController = {
   // 1. AI Business Chatbot
@@ -94,96 +94,7 @@ Be specific with numbers and percentages. Generate 3-5 insights and 3-5 recommen
     }
   },
 
-  // 5. Payment Prediction
-  async paymentPrediction(req, res) {
-    try {
-      const { invoices } = req.body;
-      if (!invoices || !Array.isArray(invoices))
-        return res.status(400).json({ success: false, message: 'Invoices array is required' });
-
-      const systemPrompt = `You are a payment prediction AI for AccessoHub CRM.
-Analyze the invoice data and predict payment likelihood.
-Return JSON with:
-{
-  "predictions": [{"invoiceId": "string", "client": "string", "amount": number, "riskLevel": "low|medium|high", "predictedPayDate": "YYYY-MM-DD", "reason": "string"}],
-  "overallRisk": "string summary of overall risk",
-  "actionItems": ["specific follow-up action 1", "specific follow-up action 2", ...]
-}
-Consider factors: days overdue, amount size, client history, status. Generate realistic predictions.`;
-
-      const userPrompt = `Analyze these invoices for payment risk:\n${JSON.stringify(invoices, null, 2)}`;
-      const result = await askGeminiJSON(userPrompt, systemPrompt);
-      return res.json({ success: true, result });
-    } catch (error) {
-      console.error('Prediction error:', error.message);
-      return res.status(500).json({ success: false, message: error.message });
-    }
-  },
-
-  // 6. AI Image / Document Scanner (Auto-Fill)
-  async scanDocument(req, res) {
-    try {
-      const { imageBase64, targetType = 'client' } = req.body;
-      if (!imageBase64) {
-        return res.status(400).json({ success: false, message: 'Image data is required' });
-      }
-
-      const schemas = {
-        client: `{ "name": "string", "company": "string", "email": "string", "phone": "string", "industry": "string", "address": "string", "country": "string", "website": "string", "notes": "string" }`,
-        product: `{ "name": "string", "ref": "string", "retailPrice": number, "wholesalePrice": number, "purchaseCost": number, "stock": number, "description": "string" }`,
-        invoice: `{ "client": "string", "invoiceNumber": "string", "date": "YYYY-MM-DD", "items": [{"name": "string", "description": "string", "quantity": number, "price": number}], "taxRate": number, "notes": "string" }`,
-      };
-
-      const selectedSchema = schemas[targetType] || schemas.client;
-      const systemPrompt = `You are an expert OCR and CRM data extraction AI for AccessoHub.
-Extract all visible information from the uploaded image (business card, receipt, invoice, product label, or document) into structured JSON matching:
-${selectedSchema}
-Use empty string "" or 0 for missing fields. Ensure numeric fields are numbers.`;
-
-      const userPrompt = `Extract ${targetType} fields from this image as JSON.`;
-      const result = await askGeminiVisionJSON(imageBase64, userPrompt, systemPrompt);
-      return res.json({ success: true, result });
-    } catch (error) {
-      console.error('Document scan error:', error.message);
-      return res.status(500).json({ success: false, message: error.message });
-    }
-  },
-
-  // 7. AI Meeting & Call Notes Summarizer
-  async summarizeMeeting(req, res) {
-    try {
-      const { notes, customerName = '' } = req.body;
-      if (!notes || !notes.trim()) {
-        return res.status(400).json({ success: false, message: 'Meeting notes text is required' });
-      }
-
-      const systemPrompt = `You are a CRM meeting notes analyzer for AccessoHub.
-Analyze the provided meeting notes or call transcript and extract structured takeaways.
-Return JSON with:
-{
-  "summary": "2-3 sentence executive summary",
-  "sentiment": "hot|warm|cold",
-  "keyDecisions": ["decision 1", "decision 2"],
-  "actionItems": [
-    {
-      "title": "short actionable task title",
-      "type": "call|email|meeting|follow_up|demo|other",
-      "priority": "low|medium|high|urgent",
-      "description": "brief context for the task"
-    }
-  ]
-}`;
-
-      const userPrompt = `${customerName ? `Client: ${customerName}\n` : ''}Notes:\n${notes}`;
-      const result = await askGeminiJSON(userPrompt, systemPrompt);
-      return res.json({ success: true, result });
-    } catch (error) {
-      console.error('Meeting summary error:', error.message);
-      return res.status(500).json({ success: false, message: error.message });
-    }
-  },
-
-  // 8. Silent Customer & Churn Radar
+  // 5. Silent Customer & Churn Radar
   async churnRadar(req, res) {
     try {
       const { customers = [] } = req.body;
@@ -253,7 +164,7 @@ Return JSON with:
       const systemPrompt = `You are the Command Copilot for AccessoHub CRM.
 Map the user's natural language command to ONE of these JSON actions:
 1. Navigate to a page:
-   { "action": "navigate", "path": "/| /customer | /task | /product | /productcategory | /supplier | /supplierpurchase | /supplierpayment | /quote | /invoice | /payment | /settings | /ai/email | /ai/invoice | /ai/insights | /ai/predictions | /ai/scanner | /ai/notes | /ai/churn-radar | /ai/margin-optimizer", "label": "friendly page name" }
+   { "action": "navigate", "path": "/| /customer | /task | /product | /productcategory | /supplier | /supplierpurchase | /supplierpayment | /quote | /invoice | /payment | /settings | /ai/email | /ai/invoice | /ai/insights | /ai/churn-radar | /ai/margin-optimizer | /ai/cashflow-bridge", "label": "friendly page name" }
 2. Create a CRM task:
    { "action": "create_task", "task": { "title": "string", "type": "call|email|meeting|follow_up|demo|other", "priority": "low|medium|high|urgent", "description": "string" } }
 3. Create a customer:
