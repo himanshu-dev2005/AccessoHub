@@ -1,8 +1,9 @@
-const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
 
 async function callNativeGemini(apiKey, model, prompt, systemPrompt) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
-  const res = await fetch(url, {
+  const modelName = model.startsWith('models/') ? model : `models/${model}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  return fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     signal: AbortSignal.timeout(4500),
@@ -15,7 +16,24 @@ async function callNativeGemini(apiKey, model, prompt, systemPrompt) {
       },
     }),
   });
-  return res;
+}
+
+async function discoverAvailableModel(apiKey) {
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`,
+      { signal: AbortSignal.timeout(3000) }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const candidates = (data.models || []).filter((m) =>
+      Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent')
+    );
+    const flash = candidates.find((m) => m.name.includes('flash'));
+    return (flash || candidates[0])?.name || null;
+  } catch {
+    return null;
+  }
 }
 
 async function askGemini(prompt, systemPrompt = 'You are a helpful assistant.') {
@@ -25,6 +43,7 @@ async function askGemini(prompt, systemPrompt = 'You are a helpful assistant.') 
   }
 
   let lastError = '';
+  let saw404 = false;
   for (const model of GEMINI_MODELS) {
     try {
       const res = await callNativeGemini(apiKey, model, prompt, systemPrompt);
@@ -36,7 +55,7 @@ async function askGemini(prompt, systemPrompt = 'You are a helpful assistant.') 
         const errBody = await res.text();
         lastError = `Status ${res.status}`;
         console.error(`Gemini (${model}) error:`, res.status, errBody.slice(0, 300));
-        // Don't retry if API key itself is invalid
+        if (res.status === 404) saw404 = true;
         if (res.status === 400 || res.status === 403) {
           return `⚠️ Invalid or unauthorized GEMINI_API_KEY (${res.status}). Please check your key in Vercel Environment Variables.`;
         }
@@ -44,6 +63,22 @@ async function askGemini(prompt, systemPrompt = 'You are a helpful assistant.') 
     } catch (err) {
       lastError = err.message;
       console.error(`Gemini (${model}) fetch error:`, err.message);
+    }
+  }
+
+  if (saw404) {
+    const discovered = await discoverAvailableModel(apiKey);
+    if (discovered) {
+      try {
+        const res = await callNativeGemini(apiKey, discovered, prompt, systemPrompt);
+        if (res.ok) {
+          const data = await res.json();
+          const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text).join('') || '';
+          if (text) return text;
+        }
+      } catch (err) {
+        lastError = err.message;
+      }
     }
   }
 
