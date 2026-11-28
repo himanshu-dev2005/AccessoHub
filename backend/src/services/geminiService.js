@@ -53,11 +53,16 @@ async function askGemini(prompt, systemPrompt = 'You are a helpful assistant.') 
         if (text) return text;
       } else {
         const errBody = await res.text();
-        lastError = `Status ${res.status}`;
+        let apiMsg = `Status ${res.status}`;
+        try {
+          const parsed = JSON.parse(errBody);
+          if (parsed?.error?.message) apiMsg = `${res.status}: ${parsed.error.message}`;
+        } catch {}
+        lastError = apiMsg;
         console.error(`Gemini (${model}) error:`, res.status, errBody.slice(0, 300));
         if (res.status === 404) saw404 = true;
         if (res.status === 400 || res.status === 403) {
-          return `⚠️ Invalid or unauthorized GEMINI_API_KEY (${res.status}). Please check your key in Vercel Environment Variables.`;
+          return `⚠️ Invalid or unauthorized GEMINI_API_KEY (${apiMsg}). Please update GEMINI_API_KEY in Vercel Environment Variables (get a free key at https://aistudio.google.com/apikey).`;
         }
       }
     } catch (err) {
